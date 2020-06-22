@@ -15,8 +15,6 @@ import com.fest.pecfestBackend.repository.UserRepo;
 
 @SpringBootApplication
 @ComponentScan({"com.fest.pecfestBackend"})
-//@EnableJpaRepositories({"com.fest.pecfestBackend.repository"})
-@EntityScan({"com.fest.pecfestBackend.entity"})
 public class PecfestBackendApplication {
 	
 	public static void main(String[] args) {
