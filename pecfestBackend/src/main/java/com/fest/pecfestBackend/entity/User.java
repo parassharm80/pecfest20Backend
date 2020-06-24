@@ -1,5 +1,6 @@
 package com.fest.pecfestBackend.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -7,7 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,12 +24,18 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	
-	public String name;
+	@Column(nullable = false)
+	private String name;
 	
-	public String email;
+	@Column(nullable = false)
+	private String email;
 	
-	public String gender;
+	@Column(nullable = false)
+	private String password;
 	
-	public Long yearofeducation;
+	private String gender;
+	
+	@Column(nullable = false)
+	private Long yearofeducation;
 	
 }
