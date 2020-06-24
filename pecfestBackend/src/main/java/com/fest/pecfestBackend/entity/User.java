@@ -1,5 +1,6 @@
 package com.fest.pecfestBackend.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,19 +18,27 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@Builder
 @Table(name="Users")
 public class User {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private Long id;
 	
-	public String name;
+	@Column(nullable = false)
+	private String name;
 	
-	public String email;
+	@Column(nullable = false)
+	private String email;
 	
-	public String gender;
+	@Column(nullable = false)
+	private String password;
 	
-	public Long yearofeducation;
+	@Column
+	private String gender;
+	
+	@Column(nullable = false)
+	private Long yearofeducation;
 	
 }
