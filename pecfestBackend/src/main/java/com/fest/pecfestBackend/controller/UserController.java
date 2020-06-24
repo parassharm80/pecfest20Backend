@@ -38,7 +38,4 @@ public class UserController {
 		userRepo.save(body);
 		return ResponseEntity.ok(body);
 	}
-	
-	
-	
 }
