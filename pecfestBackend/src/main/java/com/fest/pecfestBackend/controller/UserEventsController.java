@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fest.pecfestBackend.entity.User;
 import com.fest.pecfestBackend.entity.UserEvents;
-import com.fest.pecfestBackend.repository.UserEventsRepo;
+import com.fest.pecfestBackend.response.WrapperResponse;
+import com.fest.pecfestBackend.service.UserEventsService;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,33 +25,21 @@ import javax.json.JsonObject;
 public class UserEventsController {
 
 	@Autowired
-	private UserEventsRepo userEventsRepo;
+	private UserEventsService userEventsService;
 	
 	@GetMapping
-	public List<UserEvents> getUserEvents(){
-		return (List<UserEvents>)userEventsRepo.findAll();
-		// change fetch for specific user
+	public WrapperResponse<List<UserEvents> > getUserEvents(@RequestBody UserEvents body) {
+		return userEventsService.fetchUserEvents(body);
 	}
 	
 	@PostMapping
-	public void addUserEvent(@RequestBody UserEvents body) {
-		userEventsRepo.save(body);
+	public WrapperResponse<UserEvents> addUserEvent(@RequestBody UserEvents body) {
+		return userEventsService.saveUserEvents(body);
 	}
 	
 	@PatchMapping("/{id}")
-	public ResponseEntity editUser(@PathVariable("id") String id,@RequestBody UserEvents body) {
-		// Check if id is not present error
-		UserEvents userOldData = (UserEvents) userEventsRepo.findByUserId(id);
-		
-		List<String> userNewEvents = body.getUserEvents();
-		List<String> userOldEvents = userOldData.getUserEvents();
-		
-		List<String> userAllEvents = Stream.concat(userOldEvents.stream(), userNewEvents.stream()).distinct().collect(Collectors.toList());
-		
-		body.setUserEvents(userAllEvents);
-		
-		userEventsRepo.save(body);
-		return ResponseEntity.ok(body);
+	public WrapperResponse<UserEvents> editUserEvents(@PathVariable("id") String id,@RequestBody UserEvents body) {
+		return userEventsService.updateUserEvents(id, body);
 	}
 	
 }

@@ -15,6 +15,6 @@ import com.fest.pecfestBackend.entity.UserEvents;
 public interface UserEventsRepo extends JpaRepository<UserEvents, Long>, JpaSpecificationExecutor<UserEvents>{
 	
 	@Query("select c from UserEvents c where c.id is ?1")
-    UserEvents findByUserId(String id);
+    UserEvents findUserById(String id);
 
 }
