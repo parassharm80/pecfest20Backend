@@ -13,34 +13,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
 @Getter
 @Setter
-@Table(name="Users")
-public class User {
-	
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Builder
+@Table(name ="Team")
+public class Team {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
-	
+	private long teamId;
+
 	@Column(nullable = false)
-	private String name;
-	
+	private String teamName;
+
 	@Column(nullable = false)
-	private String email;
-	
-	@Column(nullable = false)
-	private String password;
-	
-	private String gender;
-	
-	@Column(nullable = false)
-	private Long yearofeducation;
-	
+	private long eventId;	
+		
 	@Column
-	private Long preference= (long) 0;
-	
-	@Column
-	private Long teamId= (long) 0;
-	
+	private long[] studentId;
+
 }
