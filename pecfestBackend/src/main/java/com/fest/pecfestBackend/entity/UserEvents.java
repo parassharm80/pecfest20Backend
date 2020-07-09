@@ -16,9 +16,6 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +24,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Getter
+@Setter
 @Table(name = "UserEvents")
 public class UserEvents implements Serializable {
 
@@ -36,14 +35,6 @@ public class UserEvents implements Serializable {
 	 private String id;
 	 
 	 private String userEvents;
-	 
-	 public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
 
 	public List<String> getUserEvents() {
 		return Arrays.asList(userEvents.split(","));

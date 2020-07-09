@@ -27,14 +27,6 @@ public class EventUsers {
 	private String id;
 	
 	private String eventUsers;
-	
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
 
 	public List<String> getEventUsers() {
 		return Arrays.asList(eventUsers.split(","));
