@@ -37,7 +37,8 @@ public class UserController {
 	}
 	
 	@PatchMapping("/{id}")
-	public WrapperResponse<User> editUser(@PathVariable("id") Long id,@RequestBody User body) {
+	public WrapperResponse<User> editUser(@PathVariable("id") Long id
+			,@RequestBody User body) {
 		return userService.editUser(id, body);
 	}
 }
