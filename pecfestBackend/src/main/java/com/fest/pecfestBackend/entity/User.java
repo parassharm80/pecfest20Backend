@@ -36,6 +36,9 @@ public class User {
 	
 	@Column(nullable = false)
 	private Long yearofeducation;
+
+	@Column(name="accommodation")
+	private Boolean requireAccommodation=false;
 	
 	@Column
 	private Long preference= (long) 0;

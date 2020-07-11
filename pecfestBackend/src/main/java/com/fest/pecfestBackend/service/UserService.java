@@ -54,4 +54,17 @@ public class UserService {
 		return WrapperResponse.<User>builder().data(body).build();
 	}
 
+	public WrapperResponse<User> setAccommodation(Long id) {
+
+		if(!userRepo.findById(id).isPresent()){
+			return WrapperResponse.<User>builder().
+					statusCode("FAILED").
+					statusMessage("CONFIGURATION DOES NOT EXISTS").build();
+		}
+		User currentUser= userRepo.findById(id).get();
+		currentUser.setRequireAccommodation(true);
+		userRepo.save(currentUser);
+		return WrapperResponse.<User>builder().data(currentUser).build();
+	}
+
 }
