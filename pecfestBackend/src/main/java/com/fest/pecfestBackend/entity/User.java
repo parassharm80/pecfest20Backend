@@ -42,5 +42,8 @@ public class User {
 	
 	@Column
 	private Long teamId= (long) 0;
+
+	@Column(name="accommodation")
+	private Boolean requireAccommodation=false;
 	
 }
