@@ -56,14 +56,6 @@ public class UserService {
 
 	public WrapperResponse<User> setAccommodation(Long id) {
 
-		if(!userRepo.existsById(id))
-		{
-			return WrapperResponse.<User>builder().
-					statusCode("FAILED").
-					statusMessage("CONFIGURATION DOES NOT EXISTS").build();
-		}
-
-
 		if(!userRepo.findById(id).isPresent()){
 			return WrapperResponse.<User>builder().
 					statusCode("FAILED").
