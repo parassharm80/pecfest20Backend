@@ -40,7 +40,10 @@ public class UserController {
 	public WrapperResponse<User> editUser(@PathVariable("id") Long id,@RequestBody User body) {
 		return userService.editUser(id, body);
 	}
-	
-	
+
+	@PatchMapping("/accommodation/{id}")
+	public WrapperResponse<User> accommodationRequired(@PathVariable("id") Long id) {
+		return userService.setAccommodation(id);
+	}
 	
 }
