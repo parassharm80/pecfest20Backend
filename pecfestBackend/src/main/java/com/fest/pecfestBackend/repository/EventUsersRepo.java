@@ -11,8 +11,10 @@ import com.fest.pecfestBackend.entity.EventUsers;
 
 @Repository
 @EnableJpaRepositories
-public interface EventUsersRepo extends JpaRepository<EventUsers, Long>, JpaSpecificationExecutor<EventUsers>{
+public interface EventUsersRepo extends JpaRepository<EventUsers, Integer>, JpaSpecificationExecutor<EventUsers>{
 	
 	@Query("select c from EventUsers c where c.id is ?1")
 	EventUsers findEventById(String id);
+
+	EventUsers findByEventId(Integer eventId);
 }

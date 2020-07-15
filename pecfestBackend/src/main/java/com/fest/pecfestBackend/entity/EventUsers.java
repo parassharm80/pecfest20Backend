@@ -21,19 +21,24 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name="EventUsers")
-public class EventUsers {
+public class EventUsers extends AbstractEntity<Integer> {
+
+	private Integer eventId;
 	
-	@Id
-	private String id;
-	
-	private String eventUsers;
+	private String userNames;
 
 	public List<String> getEventUsers() {
-		return Arrays.asList(eventUsers.split(","));
+		return Arrays.asList(userNames.split(","));
 	}
 
 	public void setEventUsers(List<String> eventUsers) {
-		this.eventUsers = String.join(",", eventUsers);
+		this.userNames = String.join(",", eventUsers);
+	}
+
+	public EventUsers(Integer eventId, List<String> userNames) {
+		super();
+		this.eventId = eventId;
+		setEventUsers(userNames);
 	}
 
 }

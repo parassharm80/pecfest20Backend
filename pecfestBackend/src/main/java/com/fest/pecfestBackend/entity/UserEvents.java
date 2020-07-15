@@ -1,20 +1,12 @@
 package com.fest.pecfestBackend.entity;
 
-
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,21 +19,26 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "UserEvents")
-public class UserEvents implements Serializable {
+public class UserEvents extends AbstractEntity<Integer> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-   
-	 @Id
-	 private String id;
-	 
-	 private String userEvents;
 
-	public List<String> getUserEvents() {
-		return Arrays.asList(userEvents.split(","));
+ 	private String userName;
+
+ 	private String eventIds;
+
+	public List<Integer> getUserEvents() {
+		return Stream.of(eventIds.split(","))
+				.map(Integer::parseInt)
+				.collect(Collectors.toList());
 	}
 
-	public void setUserEvents(List<String> userEvents) {
-		this.userEvents = String.join(",", userEvents);
+	public void setUserEvents(List<Integer> eventIds) {
+		this.eventIds = eventIds.stream().map(String::valueOf).collect(Collectors.joining(","));
 	}
 
+	public UserEvents(String userName, List<Integer> eventIds) {
+		this.userName = userName;
+		setUserEvents(eventIds);
+	}
 }
