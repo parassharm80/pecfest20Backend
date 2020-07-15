@@ -8,6 +8,6 @@ import com.fest.pecfestBackend.entity.Team;
 import com.fest.pecfestBackend.entity.User;
 
 @Repository
-public interface TeamRepo extends JpaRepository<Team, Long>, JpaSpecificationExecutor<Team>{ 
+public interface TeamRepo extends JpaRepository<Team, Integer>, JpaSpecificationExecutor<Team>{
 
 }

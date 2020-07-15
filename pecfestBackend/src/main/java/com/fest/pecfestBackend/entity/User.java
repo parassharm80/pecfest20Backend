@@ -13,18 +13,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
 @Table(name="Users")
-public class User {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
-	
+public class User extends AbstractEntity<Integer> {
+
 	@Column(nullable = false)
 	private String name;
+
+	@Column(nullable = false)
+	private String userName;
 	
 	@Column(nullable = false)
 	private String email;
@@ -35,7 +36,7 @@ public class User {
 	private String gender;
 	
 	@Column(nullable = false)
-	private Long yearofeducation;
+	private Long yearOfEducation;
 
 	@Column(name="accommodation")
 	private Boolean requireAccommodation=false;
@@ -44,6 +45,6 @@ public class User {
 	private Long preference= (long) 0;
 	
 	@Column
-	private Long teamId= (long) 0;
+	private List<Long> teamId;
 	
 }

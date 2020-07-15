@@ -13,26 +13,39 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Builder
 @Table(name ="Team")
-public class Team {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long teamId;
+public class Team extends AbstractEntity<Integer> {
 
 	@Column(nullable = false)
 	private String teamName;
 
 	@Column(nullable = false)
-	private long eventId;	
+	private Integer eventId;
 		
 	@Column
-	private long[] studentId;
+	private String userNames;
+
+	public List<String> getUserNames() {
+		return Arrays.asList(userNames.split(","));
+	}
+
+	public void setUserNames(List<String> eventUsers) {
+		this.userNames = String.join(",", eventUsers);
+	}
+
+	public Team(String teamName, Integer eventId, List<String> userNames) {
+		super();
+		this.teamName = teamName;
+		this.eventId = eventId;
+		setUserNames(userNames);
+	}
 
 }

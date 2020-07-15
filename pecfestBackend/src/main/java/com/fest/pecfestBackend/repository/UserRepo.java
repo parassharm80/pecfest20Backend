@@ -9,8 +9,9 @@ import org.springframework.stereotype.Repository;
 import com.fest.pecfestBackend.entity.User;
 
 @Repository
-public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExecutor<User>{
+public interface UserRepo extends JpaRepository<User, Integer>, JpaSpecificationExecutor<User>{
 
 	List<User> findByEmail(String email);
 
+	User findByUserName(String userName);
 }
