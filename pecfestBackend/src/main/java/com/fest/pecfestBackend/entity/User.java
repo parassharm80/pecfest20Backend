@@ -46,4 +46,7 @@ public class User {
 	@Column
 	private Long teamId= (long) 0;
 	
+	@Column
+	private boolean isEnabled;
+	
 }
