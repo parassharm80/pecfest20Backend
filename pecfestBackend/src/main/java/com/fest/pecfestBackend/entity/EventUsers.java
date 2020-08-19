@@ -4,11 +4,7 @@ package com.fest.pecfestBackend.entity;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,9 +20,14 @@ import lombok.Setter;
 public class EventUsers {
 	
 	@Id
+	@Column(nullable = false)
 	private String id;
-	
+
+	@Column(nullable = false)
 	private String eventUsers;
+
+	@Column(nullable = false)
+	private int isTeam;
 
 	public List<String> getEventUsers() {
 		return Arrays.asList(eventUsers.split(","));

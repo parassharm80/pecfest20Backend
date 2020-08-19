@@ -13,4 +13,6 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
 
 	User findByEmail(String email);
 
+	List<User> findByRequireAccommodationTrue();
+
 }

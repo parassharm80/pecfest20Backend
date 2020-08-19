@@ -30,7 +30,10 @@ public class Team {
 	private String teamName;
 
 	@Column(nullable = false)
-	private long eventId;	
+	private long eventId;
+
+	@Column(nullable = false)
+	private long leaderId;
 		
 	@Column
 	private long[] studentId;

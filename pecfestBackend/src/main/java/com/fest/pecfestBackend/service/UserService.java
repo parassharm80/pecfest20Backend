@@ -67,4 +67,9 @@ public class UserService {
 		return WrapperResponse.<User>builder().data(currentUser).build();
 	}
 
+	public WrapperResponse<List<User>> getUsersWithAccommodation() {
+		return WrapperResponse.<List<User>>builder()
+				.data(userRepo.findByRequireAccommodationTrue()).build();
+	}
+
 }
