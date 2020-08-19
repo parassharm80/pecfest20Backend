@@ -11,7 +11,7 @@ import com.fest.pecfestBackend.entity.User;
 @Repository
 public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExecutor<User>{
 
-	List<User> findByEmail(String email);
+	User findByEmail(String email);
 
 	List<User> findByRequireAccommodationTrue();
 

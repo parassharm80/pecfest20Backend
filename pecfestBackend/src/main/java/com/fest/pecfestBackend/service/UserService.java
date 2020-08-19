@@ -23,8 +23,8 @@ public class UserService {
 	}
 	
 	public WrapperResponse<User> addUser(User body){
-		List<User> entitiesList = userRepo.findByEmail(body.getEmail());
-		if(!entitiesList.isEmpty())
+		User entitiesList = userRepo.findByEmail(body.getEmail());
+		if(entitiesList!=null)
 		{
 			return WrapperResponse.<User>builder().data(body).
 			statusCode("FAILED").
@@ -43,8 +43,8 @@ public class UserService {
 			statusMessage("CONFIGURATION DOES NOT EXISTS").build();			
 		}
 		body.setId(id);
-		List<User> entitiesList = userRepo.findByEmail(body.getEmail());
-		if(!entitiesList.isEmpty())
+		User entitiesList = userRepo.findByEmail(body.getEmail());
+		if(entitiesList!=null)
 		{
 			return WrapperResponse.<User>builder().data(body).
 			statusCode("FAILED").
