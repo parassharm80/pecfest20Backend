@@ -10,6 +10,6 @@ import lombok.Setter;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class LogInRequest {
     private String emailId;
-    private
+    private String password;
 
 }

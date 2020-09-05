@@ -1,18 +1,18 @@
 package com.fest.pecfestBackend.repository;
 
-import java.util.List;
-
+import com.fest.pecfestBackend.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-import com.fest.pecfestBackend.entity.User;
+import java.util.List;
 
 @Repository
 public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExecutor<User>{
 
 	User findByEmail(String email);
-
+	User findByEmailAndPassword(String email,String password);
 	List<User> findByRequireAccommodationTrue();
+
 
 }
