@@ -19,7 +19,7 @@ public class LogInService {
     public WrapperResponse authenticateUser(LogInRequest logInRequest){
         String hashedPassword=Hashing.sha512().hashString(logInRequest.getPassword(), StandardCharsets.UTF_8).toString();
         if(Objects.isNull(userRepo.findByEmailAndPassword(logInRequest.getEmailId(),hashedPassword)))
-            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).build();
+            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Oops wrong password/email!").build();
         else
             return WrapperResponse.builder().build();
     }

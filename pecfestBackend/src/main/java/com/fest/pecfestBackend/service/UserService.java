@@ -1,14 +1,14 @@
 package com.fest.pecfestBackend.service;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.fest.pecfestBackend.entity.User;
 import com.fest.pecfestBackend.repository.UserRepo;
 import com.fest.pecfestBackend.response.WrapperResponse;
-import com.sun.el.stream.Optional;
+import com.google.common.hash.Hashing;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 
 @Service
@@ -30,6 +30,9 @@ public class UserService {
 			statusCode("FAILED").
 			statusMessage("CONFIGURATION ALREADY EXISTS").build();
 		}
+		// Storing password hash instead of password
+		String hashedPassword= Hashing.sha512().hashString(body.getPassword(), StandardCharsets.UTF_8).toString();
+		body.setPassword(hashedPassword);
 		userRepo.save(body);
 		return WrapperResponse.<User>builder().data(body).build();
 	}
