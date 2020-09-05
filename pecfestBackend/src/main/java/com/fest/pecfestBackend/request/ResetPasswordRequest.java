@@ -9,11 +9,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @AllArgsConstructor
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @NoArgsConstructor
-public class LogInRequest {
+public class ResetPasswordRequest {
     private String emailId;
     private String password;
-
+    private Integer verificationCode;
 }
