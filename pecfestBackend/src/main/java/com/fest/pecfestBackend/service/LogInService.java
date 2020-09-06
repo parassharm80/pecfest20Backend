@@ -40,8 +40,9 @@ public class LogInService {
     private SimpleMailMessage createEmailMessage(int verificationCode,String emailId) {
         SimpleMailMessage message=new SimpleMailMessage();
         message.setTo(emailId);
-        message.setSubject("Reset Password");
-        message.setText("The verification code for resetting the password is: "+verificationCode);
+        message.setFrom("registrations@pecfest.in");
+        message.setSubject("Reset Password Instructions");
+        message.setText("The verification code for resetting the password is: "+verificationCode+" The code is valid for 5 minutes");
         return message;
     }
 
