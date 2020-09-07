@@ -14,7 +14,7 @@ public class LogInController {
 
    @PostMapping(("/login"))
     public WrapperResponse logInUser(@RequestBody LogInRequest logInRequest){
-       return logInService.authenticateUser(logInRequest);
+       return logInService.logInUser(logInRequest);
    }
    @GetMapping("/forgot-password")
     public WrapperResponse forgotPassword(@RequestParam String emailId){

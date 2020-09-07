@@ -1,20 +1,13 @@
 package com.fest.pecfestBackend.controller;
 
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.fest.pecfestBackend.service.EventUsersService;
 import com.fest.pecfestBackend.entity.EventUsers;
 import com.fest.pecfestBackend.response.WrapperResponse;
+import com.fest.pecfestBackend.service.EventUsersService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/eventusers")

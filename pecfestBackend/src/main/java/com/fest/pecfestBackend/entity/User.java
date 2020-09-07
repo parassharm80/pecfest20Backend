@@ -2,6 +2,7 @@ package com.fest.pecfestBackend.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 
@@ -39,6 +40,8 @@ public class User {
 	private Long teamId= (long) 0;
 	
 	@Column
-	private boolean isEnabled;
+	private boolean isEnabled; //to check whether the user is verified or not
+	@Column
+	private String sessionId= StringUtils.EMPTY;
 
 }
