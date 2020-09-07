@@ -5,10 +5,12 @@ import com.fest.pecfestBackend.enums.EventCount;
 import com.fest.pecfestBackend.enums.EventType;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.time.LocalDateTime;
+
 @Getter
 @Setter
-public class AddEventRequest {
+public class EventRequest {
 
     private String eventName;
     private EventType eventType;
@@ -22,4 +24,6 @@ public class AddEventRequest {
     private LocalDateTime eventStartDateAndTime;
     private LocalDateTime eventEndDateAndTime;
     private String eventDescription;
+    private String prizeMoneyWorth;
+    private String venue;
 }

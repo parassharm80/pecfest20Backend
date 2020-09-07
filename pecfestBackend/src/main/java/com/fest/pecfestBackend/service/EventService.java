@@ -3,7 +3,7 @@ package com.fest.pecfestBackend.service;
 import com.fest.pecfestBackend.entity.Event;
 import com.fest.pecfestBackend.enums.Club;
 import com.fest.pecfestBackend.repository.EventRepo;
-import com.fest.pecfestBackend.request.AddEventRequest;
+import com.fest.pecfestBackend.request.EventRequest;
 import com.fest.pecfestBackend.response.WrapperResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,10 +21,13 @@ public class EventService {
         return WrapperResponse.builder().data(eventRepo.findByOrganizingClub(organizingClubName)).build();
     }
 
-    public WrapperResponse addEvent(AddEventRequest addEventRequest) {
+    public WrapperResponse addEvent(EventRequest addEventRequest) {
         Event event=eventRepo.findByEventName(addEventRequest.getEventName());
-        if(Objects.isNull(event))
-            return WrapperResponse.builder().data(getNewEvent(addEventRequest)).statusMessage("Event added successfully").build();
+        if(Objects.isNull(event)){
+            Event newEvent=getNewEvent(addEventRequest);
+            eventRepo.save(newEvent);
+            return WrapperResponse.builder().data(newEvent).statusMessage("Event added successfully").build();
+        }
         else
             return WrapperResponse.builder().statusCode(HttpStatus.BAD_REQUEST.toString()).httpStatus(HttpStatus.BAD_REQUEST).statusMessage("The event name already exists!").build();
     }
@@ -32,11 +35,12 @@ public class EventService {
         return WrapperResponse.builder().data(eventRepo.findAll()).build();
     }
 
-    private Event getNewEvent(AddEventRequest addEventRequest) {
+    private Event getNewEvent(EventRequest addEventRequest) {
         return Event.builder().eventCount(addEventRequest.getEventCount()).eventDescription(addEventRequest.getEventDescription()).eventEndDateAndTime(addEventRequest.getEventEndDateAndTime())
                 .organizingClub(addEventRequest.getOrganizingClub()).organizerContactNo(addEventRequest.getOrganizerContactNo())
                 .minNumberOfParticipants(addEventRequest.getMinNumberOfParticipants()).maxNumberOfParticipants(addEventRequest.getMaxNumberOfParticipants()).eventStartDateAndTime(addEventRequest.getEventStartDateAndTime())
-                .eventType(addEventRequest.getEventType()).build();
+                .eventType(addEventRequest.getEventType()).prizeMoneyWorth(addEventRequest.getPrizeMoneyWorth())
+                .venue(addEventRequest.getVenue()).build();
     }
 
     public WrapperResponse deleteEvent(Long eventId) {
@@ -44,6 +48,24 @@ public class EventService {
         if(event.isPresent()) {
             eventRepo.deleteById(eventId);
             return WrapperResponse.builder().data(event.get()).statusMessage("Event deleted successfully").build();
+        }
+        else{
+            return WrapperResponse.builder().statusMessage("No such event exists").httpStatus(HttpStatus.BAD_REQUEST).statusCode(HttpStatus.BAD_REQUEST.toString()).build();
+        }
+    }
+
+    public WrapperResponse editEvent(Long eventId, EventRequest editEventRequest) {
+        Optional<Event> oldEventOptional=eventRepo.findById(eventId);
+        if(oldEventOptional.isPresent()){
+            Event oldEvent=oldEventOptional.get();
+
+            oldEvent.setEventDescription(Optional.ofNullable(editEventRequest.getEventDescription()).orElse(oldEvent.getEventDescription()));
+            oldEvent.setEventEndDateAndTime(Optional.ofNullable(editEventRequest.getEventEndDateAndTime()).orElse(oldEvent.getEventEndDateAndTime()));
+            oldEvent.setEventEndDateAndTime(Optional.ofNullable(editEventRequest.getEventStartDateAndTime()).orElse(oldEvent.getEventStartDateAndTime()));
+            oldEvent.setVenue(Optional.ofNullable(editEventRequest.getVenue()).orElse(oldEvent.getVenue()));
+            oldEvent.setOrganizerContactNo(Optional.ofNullable(editEventRequest.getOrganizerContactNo()).orElse(oldEvent.getOrganizerContactNo()));
+            eventRepo.save(oldEvent);
+            return WrapperResponse.builder().data(oldEvent).statusMessage("Edited successfully").build();
         }
         else{
             return WrapperResponse.builder().statusMessage("No such event exists").httpStatus(HttpStatus.BAD_REQUEST).statusCode(HttpStatus.BAD_REQUEST.toString()).build();

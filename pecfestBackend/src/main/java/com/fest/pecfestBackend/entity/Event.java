@@ -21,17 +21,27 @@ public class Event {
     private Long eventID;
     @Column(nullable = false)
     private String eventName;
+
     @Column(nullable = false)
     private EventType eventType;
+
     @Column(nullable = false)
     private EventCount eventCount;
+
     private Club organizingClub;
     private String organizerContactNo;
+
     @Column(nullable = false)
     private Integer minNumberOfParticipants;
+
     @Column(nullable = false)
     private Integer maxNumberOfParticipants;
+
     private LocalDateTime eventStartDateAndTime;
     private LocalDateTime eventEndDateAndTime;
+
     private String eventDescription;
+
+    private String prizeMoneyWorth;
+    private String venue;
 }

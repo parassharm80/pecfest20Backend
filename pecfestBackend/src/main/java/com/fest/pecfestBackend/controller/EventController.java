@@ -1,7 +1,7 @@
 package com.fest.pecfestBackend.controller;
 
 import com.fest.pecfestBackend.enums.Club;
-import com.fest.pecfestBackend.request.AddEventRequest;
+import com.fest.pecfestBackend.request.EventRequest;
 import com.fest.pecfestBackend.response.WrapperResponse;
 import com.fest.pecfestBackend.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +21,15 @@ public class EventController {
         return eventService.getAllEvents();
     }
     @PostMapping
-    public WrapperResponse addEvent(@RequestBody AddEventRequest addEventRequest){
+    public WrapperResponse addEvent(@RequestBody EventRequest addEventRequest){
         return eventService.addEvent(addEventRequest);
     }
     @DeleteMapping("/{event_id}")
-    public WrapperResponse editEvent(@PathVariable("event_id") Long eventId){
+    public WrapperResponse deleteEvent(@PathVariable("event_id") Long eventId){
         return eventService.deleteEvent(eventId);
+    }
+    @PutMapping
+    public WrapperResponse editEvent(@RequestParam Long eventId,@RequestBody EventRequest editEventRequest){
+        return eventService.editEvent(eventId,editEventRequest);
     }
 }
