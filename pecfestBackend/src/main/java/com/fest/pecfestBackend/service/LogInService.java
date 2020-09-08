@@ -28,7 +28,7 @@ public class LogInService {
         if(Objects.isNull(user)) {
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Oops wrong password/email!").build();
         }
-        else if(!user.isEnabled()){
+        else if(!user.isVerified()){
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Your mail has not been verified yet.Check your past emails").build();
         }
         else {

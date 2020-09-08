@@ -2,15 +2,19 @@ package com.fest.pecfestBackend.service;
 
 import com.fest.pecfestBackend.entity.Event;
 import com.fest.pecfestBackend.enums.Club;
+import com.fest.pecfestBackend.enums.EventType;
 import com.fest.pecfestBackend.repository.EventRepo;
 import com.fest.pecfestBackend.request.EventRequest;
+import com.fest.pecfestBackend.response.TechnoCultEventResponse;
 import com.fest.pecfestBackend.response.WrapperResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EventService {
@@ -32,7 +36,10 @@ public class EventService {
         }
     }
     public WrapperResponse getAllEvents() {
-        return WrapperResponse.builder().data(eventRepo.findAll()).build();
+        List<Event> eventList=eventRepo.findAll();
+        List<Event> culturalEventList=eventList.parallelStream().filter(event->event.getEventType()== EventType.CULTURAL).collect(Collectors.toList());
+        List<Event> technicalEventList=eventList.parallelStream().filter(event->event.getEventType()== EventType.TECHNICAL).collect(Collectors.toList());
+        return WrapperResponse.builder().data(TechnoCultEventResponse.builder().culturalEvent(culturalEventList).technicalEvent(technicalEventList).build()).build();
     }
 
     private Event getNewEvent(EventRequest addEventRequest) {

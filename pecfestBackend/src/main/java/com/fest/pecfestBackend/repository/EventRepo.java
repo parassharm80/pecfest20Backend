@@ -9,4 +9,5 @@ import java.util.List;
 public interface EventRepo extends JpaRepository<Event, Long> {
     List<Event> findByOrganizingClub(Club organizingClub);
     Event findByEventName(String eventName);
+    boolean existsByEventID(Long eventId);
 }

@@ -44,7 +44,7 @@ public class User {
 	private Long teamId= (long) 0;
 	
 	@Column
-	private boolean isEnabled; //to check whether the user is verified or not
+	private boolean isVerified; //to check whether the user is verified or not
 	@Column
 	private String sessionId;
 

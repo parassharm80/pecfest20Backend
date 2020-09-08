@@ -66,7 +66,7 @@ public class UserAccountService {
 		Confirmation confirmation = confirmationRepo.findByConfirmToken(confirmationToken);
 		if(confirmation!=null) {
 			User user = userRepo.findByEmail(confirmation.getUser().getEmail());
-			user.setEnabled(true);
+			user.setVerified(true);
 			userRepo.save(user);
 			modelAndView.setViewName("Account Verified");
 			

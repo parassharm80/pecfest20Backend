@@ -2,6 +2,7 @@ package com.fest.pecfestBackend.service;
 
 import com.fest.pecfestBackend.entity.Team;
 import com.fest.pecfestBackend.entity.User;
+import com.fest.pecfestBackend.repository.EventRepo;
 import com.fest.pecfestBackend.repository.TeamRepo;
 import com.fest.pecfestBackend.repository.UserRepo;
 import com.fest.pecfestBackend.response.WrapperResponse;
@@ -22,13 +23,18 @@ public class EventRegistrationService {
     TeamRepo teamRepo;
     @Autowired
     private SessionService sessionService;
+    @Autowired
+    private EventRepo eventRepo;
     public WrapperResponse registerForAnEvent(Long eventId, List<String> pecFestIds, String teamName, String sessionId) {
         User user=sessionService.verifySessionId(sessionId);
         if(Objects.isNull(user)) {
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Invalid sessionId.Log in again").build();
         }
         else{
-           String inValidPecFestIds=pecFestIds.parallelStream().filter(pecFestId->!userRepo.existsByPecFestId(pecFestId)).collect(Collectors.joining(", "));
+            if(!eventRepo.existsByEventID(eventId))
+                return WrapperResponse.builder().statusMessage("No such event exists").httpStatus(HttpStatus.BAD_REQUEST).build();
+
+           String inValidPecFestIds=pecFestIds.parallelStream().filter(pecFestId->!userRepo.existsByVerifiedAndPecFestId(true,pecFestId)).collect(Collectors.joining(", "));
            if(StringUtils.isAllEmpty(inValidPecFestIds))
            {
                 if(teamRepo.existsByTeamNameAndEventId(teamName,eventId)) {

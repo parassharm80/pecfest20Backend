@@ -14,5 +14,5 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
 	User findByEmailAndPassword(String email,String password);
 	List<User> findByRequireAccommodationTrue();
 	User findBySessionId(String sessionId);
-	boolean existsByPecFestId(String pecFestId);
+	boolean existsByVerifiedAndPecFestId(boolean isVerified,String pecFestId);
 }
