@@ -23,7 +23,7 @@ public class User {
 	@Column(nullable = false)
 	private String lastName;
 	
-	@Column(nullable = false)
+	@Column(nullable = false,unique = true)
 	private String email;
 	
 	@Column(nullable = false)
@@ -47,7 +47,8 @@ public class User {
 	private boolean isVerified; //to check whether the user is verified or not
 	@Column
 	private String sessionId;
-
+	@Column
+	private Long otpForPasswordReset;
 	public String getName(){
 		return this.firstName+this.lastName;
 	}

@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fest.pecfestBackend.entity.User;
-import com.fest.pecfestBackend.repository.ConfirmationRepo;
-import com.fest.pecfestBackend.repository.UserRepo;
-import com.fest.pecfestBackend.service.EmailSenderService;
 import com.fest.pecfestBackend.service.UserAccountService;
 
 @RestController("/register")
@@ -36,6 +33,4 @@ public class UserAccountController {
 	public ModelAndView confirmUserAccount(ModelAndView modelAndView, @RequestParam String confirmationToken) {
 		return useraccountService.confirmUserAccount(modelAndView, confirmationToken);
 	}
-	
-	
 }

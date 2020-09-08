@@ -15,5 +15,5 @@ import lombok.Setter;
 public class ResetPasswordRequest {
     private String emailId;
     private String password;
-    private Integer verificationCode;
+    private Long verificationCode;
 }

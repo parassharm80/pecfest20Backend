@@ -34,7 +34,7 @@ public class EventRegistrationService {
             if(!eventRepo.existsByEventID(eventId))
                 return WrapperResponse.builder().statusMessage("No such event exists").httpStatus(HttpStatus.BAD_REQUEST).build();
 
-           String inValidPecFestIds=pecFestIds.parallelStream().filter(pecFestId->!userRepo.existsByVerifiedAndPecFestId(true,pecFestId)).collect(Collectors.joining(", "));
+           String inValidPecFestIds=pecFestIds.parallelStream().filter(pecFestId->!userRepo.existsByPecFestIdAndIsVerified(pecFestId,true)).collect(Collectors.joining(", "));
            if(StringUtils.isAllEmpty(inValidPecFestIds))
            {
                 if(teamRepo.existsByTeamNameAndEventId(teamName,eventId)) {
