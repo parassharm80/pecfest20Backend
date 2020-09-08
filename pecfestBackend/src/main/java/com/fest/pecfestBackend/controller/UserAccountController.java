@@ -1,13 +1,9 @@
 package com.fest.pecfestBackend.controller;
 
+import com.fest.pecfestBackend.request.UserSignUpRequest;
 import com.fest.pecfestBackend.response.WrapperResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fest.pecfestBackend.entity.User;
@@ -26,8 +22,8 @@ public class UserAccountController {
 	}
 	
 	@PostMapping
-	public WrapperResponse registerUser(ModelAndView modelAndView, User user) {
-		return useraccountService.registerUser(modelAndView, user);
+	public WrapperResponse registerUser(@RequestBody UserSignUpRequest userSignUpRequest) {
+		return useraccountService.registerUser(userSignUpRequest);
 	}
 	
 	@RequestMapping(value="/confirm", method = {RequestMethod.GET, RequestMethod.POST})

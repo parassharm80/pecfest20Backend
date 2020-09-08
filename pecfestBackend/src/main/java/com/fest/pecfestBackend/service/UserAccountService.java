@@ -4,6 +4,10 @@ import com.fest.pecfestBackend.entity.Confirmation;
 import com.fest.pecfestBackend.entity.User;
 import com.fest.pecfestBackend.repository.ConfirmationRepo;
 import com.fest.pecfestBackend.repository.UserRepo;
+import com.fest.pecfestBackend.request.UserSignUpRequest;
+import com.fest.pecfestBackend.response.WrapperResponse;
+import com.google.common.hash.Hashing;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -12,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 
 @Service
@@ -28,6 +35,8 @@ public class UserAccountService {
 
 	@Value("${spring.mail.username}")
 	private String mailUsername;
+	@Value("${domain-name}")
+	private String domainHost;
 
 	public ModelAndView displayRegistration(ModelAndView modelAndView, User user) {
 		modelAndView.addObject("user",user);
@@ -35,30 +44,33 @@ public class UserAccountService {
 		return modelAndView;
 	}
 	
-	public ModelAndView registerUser(ModelAndView modelAndView, User user) {
-		User existingUser = userRepo.findByEmail(user.getEmail());
-		if(existingUser!=null) {
-			modelAndView.addObject("message","This email already exists!");
-			modelAndView.setViewName("Error");
-		}
-		else {
-			User newUser=userRepo.save(user);
-			String pecFestId="PECFEST"+ newUser.getFirstName().charAt(0)+newUser.getLastName().charAt(0)+newUser.getId().toString();
-			newUser.setPecFestId(pecFestId);
+	public WrapperResponse registerUser(UserSignUpRequest userSignUpRequest) {
+		User existingUser = userRepo.findByEmail(userSignUpRequest.getEmail());
+		if(Objects.isNull(existingUser)) {
+			String hashedPassword= Hashing.sha512().hashString(userSignUpRequest.getPassword(), StandardCharsets.UTF_8).toString();
+			User newUser=User.builder().email(userSignUpRequest.getEmail()).firstName(userSignUpRequest.getFirstName()).lastName(userSignUpRequest.getLastName())
+					.gender(userSignUpRequest.getGender()).isVerified(false).otpForPasswordReset(null)
+					.password(hashedPassword).sessionId(StringUtils.EMPTY).yearOfEducation(userSignUpRequest.getYearOfEducation())
+					.build();
 			userRepo.save(newUser);
-			Confirmation confirmation = new Confirmation(user);
+			newUser.setPecFestId("PECFEST"+ newUser.getFirstName().charAt(0)+newUser.getLastName().charAt(0)+newUser.getId().toString());
+			userRepo.save(newUser);
+			Confirmation confirmation = new Confirmation(newUser);
 			confirmationRepo.save(confirmation);
-			SimpleMailMessage mailMessage = new SimpleMailMessage();
-			mailMessage.setTo(user.getEmail());
-			mailMessage.setSubject("PECFEST Registration");
-			mailMessage.setFrom(mailUsername);
-			mailMessage.setText("");
-			emailSenderService.sendEmail(mailMessage);
-			modelAndView.addObject("emailId",user.getEmail());
-			modelAndView.setViewName("registrationSuccessful");
-			
+			emailSenderService.sendEmail(createEmailMessage(newUser.getPecFestId(), newUser.getEmail(),confirmation.getConfirmToken()));
+			return WrapperResponse.builder().statusMessage("Check email for PECFEST ID and verification.").build();
 		}
-		return modelAndView;
+
+		return WrapperResponse.builder().statusMessage("EmailID already registered").build();
+	}
+	private SimpleMailMessage createEmailMessage(String pecFestId,String emailId,String confirmationToken) {
+		SimpleMailMessage message=new SimpleMailMessage();
+		message.setTo(emailId);
+		message.setFrom(mailUsername);
+		message.setSubject("PECFEST ID and Email Verification");
+		message.setText("Your PECFEST 2020 Id is: "+pecFestId+". This ID will be used for events' registration. "+
+				"For emailVerification: Click here: "+domainHost+"?confirmation_token="+confirmationToken);
+		return message;
 	}
 	
 	@RequestMapping(value="/confirm", method = {RequestMethod.GET, RequestMethod.POST})

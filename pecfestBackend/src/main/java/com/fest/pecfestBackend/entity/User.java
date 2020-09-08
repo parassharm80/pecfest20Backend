@@ -1,5 +1,6 @@
 package com.fest.pecfestBackend.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
+@Builder
 @Table(name="Users",indexes = {@Index(unique = true,columnList = "pec_fest_id",name = "pecFestIdIndex")})
 public class User {
 	
@@ -41,7 +43,7 @@ public class User {
 	private Long preference= (long) 0;
 	
 	@Column
-	private Long teamId= (long) 0;
+	private Long teamId;
 	
 	@Column
 	private boolean isVerified; //to check whether the user is verified or not
