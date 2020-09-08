@@ -7,13 +7,15 @@ import com.fest.pecfestBackend.service.LogInLogOutService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 public class LogInLogOutController {
     @Autowired
     private LogInLogOutService logInLogOutService;
 
    @PostMapping(("/login"))
-    public WrapperResponse logInUser(@RequestBody LogInRequest logInRequest){
+    public WrapperResponse logInUser(@RequestBody @Valid LogInRequest logInRequest){
        return logInLogOutService.logInUser(logInRequest);
    }
    @GetMapping("/generate-verification-code")
@@ -21,7 +23,7 @@ public class LogInLogOutController {
        return logInLogOutService.sendVerificationCode(emailId);
    }
    @PostMapping("/reset-password")
-    public WrapperResponse resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest){
+    public WrapperResponse resetPassword(@RequestBody @Valid ResetPasswordRequest resetPasswordRequest){
        return logInLogOutService.resetPassword(resetPasswordRequest);
    }
    @DeleteMapping("/logout")
