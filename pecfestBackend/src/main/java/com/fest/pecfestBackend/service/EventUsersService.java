@@ -8,6 +8,7 @@ import com.fest.pecfestBackend.repository.EventUsersRepo;
 import com.fest.pecfestBackend.repository.TeamRepo;
 import com.fest.pecfestBackend.repository.UserRepo;
 import com.fest.pecfestBackend.response.WrapperResponse;
+import com.google.common.base.CharMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -112,8 +113,9 @@ public class EventUsersService {
 		Map<Team,List<User>> result = new HashMap<>();
 
 		for(Team team:teams){
-			List<String> pecFestIds= team.getMemberPecFestIdList();
-			List<User> users =userRepo.findAllByPecFestId(pecFestIds);
+			List<String> pecFestIdList=team.getMemberPecFestIdList();
+			List<Long> list=pecFestIdList.parallelStream().map(pecFestId->Long.valueOf(CharMatcher.inRange('0','9').retainFrom(pecFestId))).collect(Collectors.toList());
+			List<User> users =userRepo.findAllById(list);
 			result.put(team,users);
 		}
      return result;
