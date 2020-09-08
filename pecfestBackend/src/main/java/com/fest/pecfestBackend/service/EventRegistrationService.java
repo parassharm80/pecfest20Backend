@@ -1,5 +1,6 @@
 package com.fest.pecfestBackend.service;
 
+import com.fest.pecfestBackend.entity.Team;
 import com.fest.pecfestBackend.entity.User;
 import com.fest.pecfestBackend.repository.TeamRepo;
 import com.fest.pecfestBackend.repository.UserRepo;
@@ -30,7 +31,14 @@ public class EventRegistrationService {
            String inValidPecFestIds=pecFestIds.parallelStream().filter(pecFestId->!userRepo.existsByPecFestId(pecFestId)).collect(Collectors.joining(", "));
            if(StringUtils.isAllEmpty(inValidPecFestIds))
            {
-                if()
+                if(teamRepo.existsByTeamName(teamName)) {
+                    return WrapperResponse.builder().httpStatus(HttpStatus.BAD_REQUEST).statusMessage("Team Name already exists").build();
+                }
+                else{
+                    Team.builder().eventId(eventId).leaderPecFestId(pecFestIds.get(0)).memberPecFestIdList(String.join(",", pecFestIds)).teamName(teamName)
+                            .build();
+                    return WrapperResponse.builder().statusMessage("Event Registration is successful").build();
+                }
            }
            else{
                return WrapperResponse.builder().httpStatus(HttpStatus.BAD_REQUEST).statusMessage("Invalid PECFEST ids: "+inValidPecFestIds).build();

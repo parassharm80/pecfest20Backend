@@ -3,6 +3,8 @@ package com.fest.pecfestBackend.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Arrays;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,9 +26,16 @@ public class Team {
 	private long eventId;
 
 	@Column(nullable = false)
-	private long leaderPecFestId;
+	private String leaderPecFestId;
 		
 	@Column
-	private long[] memberPecFestIdList;
+	private String memberPecFestIdList;
+
+	public List<String> getMemberPecFestIdList(){
+		return Arrays.asList(memberPecFestIdList.split(","));
+	}
+	public void setMemberPecFestIdList(List<String> memberPecFestIdList){
+		this.memberPecFestIdList = String.join(",", memberPecFestIdList);
+	}
 
 }
