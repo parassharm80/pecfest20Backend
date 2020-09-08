@@ -8,6 +8,8 @@ import com.fest.pecfestBackend.enums.EventType;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
@@ -15,8 +17,11 @@ import java.time.LocalDateTime;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class EventRequest {
 
+    @NotBlank
     private String eventName;
+    @NotNull
     private EventType eventType;
+    @NotNull
     private EventCount eventCount;
     private Club organizingClub;
     private String organizerContactNo;
