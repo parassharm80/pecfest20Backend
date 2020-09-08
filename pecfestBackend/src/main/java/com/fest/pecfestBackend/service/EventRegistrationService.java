@@ -42,6 +42,7 @@ public class EventRegistrationService {
                 }
                 else{
                     Team.builder().eventId(eventId).leaderPecFestId(pecFestIds.get(0)).memberPecFestIdList(String.join(",", pecFestIds)).teamName(teamName)
+                            .leaderId(userRepo.findByPecFestId(pecFestIds.get(0)).getId())
                             .build();
                     return WrapperResponse.builder().statusMessage("Event Registration is successful").build();
                 }

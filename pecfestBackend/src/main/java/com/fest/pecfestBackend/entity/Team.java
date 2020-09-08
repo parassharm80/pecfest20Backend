@@ -27,7 +27,8 @@ public class Team {
 
 	@Column(nullable = false)
 	private String leaderPecFestId;
-		
+	@Column(nullable = false)
+	private Long leaderId;
 	@Column
 	private String memberPecFestIdList;
 

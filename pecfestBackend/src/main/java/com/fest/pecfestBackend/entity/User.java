@@ -48,4 +48,7 @@ public class User {
 	@Column
 	private String sessionId;
 
+	public String getName(){
+		return this.firstName+this.lastName;
+	}
 }

@@ -1,25 +1,18 @@
 package com.fest.pecfestBackend.service;
 
+import com.fest.pecfestBackend.entity.Team;
+import com.fest.pecfestBackend.entity.User;
+import com.fest.pecfestBackend.repository.UserRepo;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
-import com.fest.pecfestBackend.entity.Team;
-import com.fest.pecfestBackend.repository.UserRepo;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import com.fest.pecfestBackend.entity.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public class ExcelFileExporter {
@@ -57,7 +50,7 @@ public class ExcelFileExporter {
                 Row dataRow = sheet.createRow(i + 1);
                 dataRow.createCell(0).setCellValue(customers.get(i).getName());
                 dataRow.createCell(1).setCellValue(customers.get(i).getEmail());
-                dataRow.createCell(2).setCellValue(customers.get(i).getYearofeducation());
+                dataRow.createCell(2).setCellValue(customers.get(i).getYearOfEducation());
                 dataRow.createCell(3).setCellValue(customers.get(i).getGender());
             }
 
@@ -124,7 +117,7 @@ public class ExcelFileExporter {
                     }
                     innerDataRow.createCell(2).setCellValue(entry.getValue().get(j).getName());
                     innerDataRow.createCell(3).setCellValue(entry.getValue().get(j).getEmail());
-                    innerDataRow.createCell(4).setCellValue(entry.getValue().get(j).getYearofeducation());
+                    innerDataRow.createCell(4).setCellValue(entry.getValue().get(j).getYearOfEducation());
                     innerDataRow.createCell(5).setCellValue(entry.getValue().get(j).getGender());
                     i++;
                  }

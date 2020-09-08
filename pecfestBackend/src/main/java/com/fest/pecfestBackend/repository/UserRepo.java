@@ -15,4 +15,6 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
 	List<User> findByRequireAccommodationTrue();
 	User findBySessionId(String sessionId);
 	boolean existsByVerifiedAndPecFestId(boolean isVerified,String pecFestId);
+	User findByPecFestId(String pecFestId);
+	List<User> findAllByPecFestId(List<String> pecFestIds);
 }
