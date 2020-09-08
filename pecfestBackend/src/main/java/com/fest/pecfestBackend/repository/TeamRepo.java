@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TeamRepo extends JpaRepository<Team, Long>, JpaSpecificationExecutor<Team>{ 
-    boolean existsByTeamName(String teamName);
+    boolean existsByTeamNameAndEventId(String teamName,Long eventId);
 }

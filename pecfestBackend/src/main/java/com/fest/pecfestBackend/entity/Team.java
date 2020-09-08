@@ -19,11 +19,11 @@ public class Team {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long teamId;
 
-	@Column(nullable = false,unique = true)
+	@Column(nullable = false)
 	private String teamName;
 
 	@Column(nullable = false)
-	private long eventId;
+	private Long eventId;
 
 	@Column(nullable = false)
 	private String leaderPecFestId;

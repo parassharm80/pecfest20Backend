@@ -31,7 +31,7 @@ public class EventRegistrationService {
            String inValidPecFestIds=pecFestIds.parallelStream().filter(pecFestId->!userRepo.existsByPecFestId(pecFestId)).collect(Collectors.joining(", "));
            if(StringUtils.isAllEmpty(inValidPecFestIds))
            {
-                if(teamRepo.existsByTeamName(teamName)) {
+                if(teamRepo.existsByTeamNameAndEventId(teamName,eventId)) {
                     return WrapperResponse.builder().httpStatus(HttpStatus.BAD_REQUEST).statusMessage("Team Name already exists").build();
                 }
                 else{
