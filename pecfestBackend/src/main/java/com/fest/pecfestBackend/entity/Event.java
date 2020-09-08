@@ -1,5 +1,7 @@
 package com.fest.pecfestBackend.entity;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.fest.pecfestBackend.enums.Club;
 import com.fest.pecfestBackend.enums.EventCount;
 import com.fest.pecfestBackend.enums.EventType;
@@ -15,6 +17,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name="event")
 @Builder
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,11 +26,14 @@ public class Event {
     private String eventName;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private EventType eventType;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private EventCount eventCount;
 
+    @Enumerated(EnumType.STRING)
     private Club organizingClub;
     private String organizerContactNo;
 

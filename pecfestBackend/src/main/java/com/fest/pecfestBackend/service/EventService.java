@@ -22,14 +22,14 @@ public class EventService {
     }
 
     public WrapperResponse addEvent(EventRequest addEventRequest) {
-        Event event=eventRepo.findByEventName(addEventRequest.getEventName());
-        if(Objects.isNull(event)){
-            Event newEvent=getNewEvent(addEventRequest);
+        Event event = eventRepo.findByEventName(addEventRequest.getEventName());
+        if (Objects.isNull(event)) {
+            Event newEvent = getNewEvent(addEventRequest);
             eventRepo.save(newEvent);
             return WrapperResponse.builder().data(newEvent).statusMessage("Event added successfully").build();
-        }
-        else
+        } else {
             return WrapperResponse.builder().statusCode(HttpStatus.BAD_REQUEST.toString()).httpStatus(HttpStatus.BAD_REQUEST).statusMessage("The event name already exists!").build();
+        }
     }
     public WrapperResponse getAllEvents() {
         return WrapperResponse.builder().data(eventRepo.findAll()).build();
@@ -40,7 +40,7 @@ public class EventService {
                 .organizingClub(addEventRequest.getOrganizingClub()).organizerContactNo(addEventRequest.getOrganizerContactNo())
                 .minNumberOfParticipants(addEventRequest.getMinNumberOfParticipants()).maxNumberOfParticipants(addEventRequest.getMaxNumberOfParticipants()).eventStartDateAndTime(addEventRequest.getEventStartDateAndTime())
                 .eventType(addEventRequest.getEventType()).prizeMoneyWorth(addEventRequest.getPrizeMoneyWorth())
-                .venue(addEventRequest.getVenue()).build();
+                .venue(addEventRequest.getVenue()).eventName(addEventRequest.getEventName()).build();
     }
 
     public WrapperResponse deleteEvent(Long eventId) {

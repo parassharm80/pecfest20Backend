@@ -1,19 +1,17 @@
 package com.fest.pecfestBackend.service;
 
-import java.util.List;
-
+import com.fest.pecfestBackend.entity.Confirmation;
+import com.fest.pecfestBackend.entity.User;
+import com.fest.pecfestBackend.repository.ConfirmationRepo;
+import com.fest.pecfestBackend.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.fest.pecfestBackend.entity.Confirmation;
-import com.fest.pecfestBackend.entity.User;
-import com.fest.pecfestBackend.repository.ConfirmationRepo;
-import com.fest.pecfestBackend.repository.UserRepo;
 
 
 @Service
@@ -28,6 +26,9 @@ public class UserAccountService {
 	@Autowired
 	private EmailSenderService emailSenderService;
 
+	@Value("${spring.mail.username}")
+	private String mailUsername;
+
 	public ModelAndView displayRegistration(ModelAndView modelAndView, User user) {
 		modelAndView.addObject("user",user);
 		modelAndView.setViewName("register");
@@ -36,18 +37,21 @@ public class UserAccountService {
 	
 	public ModelAndView registerUser(ModelAndView modelAndView, User user) {
 		User existingUser = userRepo.findByEmail(user.getEmail());
-		if(existingUser==null) {
+		if(existingUser!=null) {
 			modelAndView.addObject("message","This email already exists!");
 			modelAndView.setViewName("Error");
 		}
 		else {
-			userRepo.save(user);
+			User newUser=userRepo.save(user);
+			String pecFestId="PECFEST"+ newUser.getFirstName().charAt(0)+newUser.getLastName().charAt(0)+newUser.getId().toString();
+			newUser.setPecFestId(pecFestId);
+			userRepo.save(newUser);
 			Confirmation confirmation = new Confirmation(user);
 			confirmationRepo.save(confirmation);
 			SimpleMailMessage mailMessage = new SimpleMailMessage();
 			mailMessage.setTo(user.getEmail());
 			mailMessage.setSubject("PECFEST Registration");
-			mailMessage.setFrom("");
+			mailMessage.setFrom(mailUsername);
 			mailMessage.setText("");
 			emailSenderService.sendEmail(mailMessage);
 			modelAndView.addObject("emailId",user.getEmail());

@@ -1,17 +1,8 @@
 package com.fest.pecfestBackend.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import lombok.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -26,16 +17,16 @@ public class Team {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long teamId;
 
-	@Column(nullable = false)
+	@Column(nullable = false,unique = true)
 	private String teamName;
 
 	@Column(nullable = false)
 	private long eventId;
 
 	@Column(nullable = false)
-	private long leaderId;
+	private long leaderPecFestId;
 		
 	@Column
-	private long[] studentId;
+	private long[] memberPecFestIdList;
 
 }

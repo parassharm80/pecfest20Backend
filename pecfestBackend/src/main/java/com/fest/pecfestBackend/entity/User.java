@@ -2,22 +2,26 @@ package com.fest.pecfestBackend.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
-@Table(name="Users")
+@Table(name="Users",indexes = {@Index(unique = true,columnList = "pec_fest_id",name = "pecFestIdIndex")})
 public class User {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private Long id;
+	@Column(name = "pec_fest_id")
+	private String pecFestId;
 	
 	@Column(nullable = false)
-	private String name;
+	private String firstName;
+
+	@Column(nullable = false)
+	private String lastName;
 	
 	@Column(nullable = false)
 	private String email;
@@ -28,9 +32,9 @@ public class User {
 	private String gender;
 	
 	@Column(nullable = false)
-	private Long yearofeducation;
+	private Long yearOfEducation;
 
-	@Column(name="accommodation")
+	@Column(name="require_accommodation")
 	private Boolean requireAccommodation=false;
 	
 	@Column
@@ -42,6 +46,6 @@ public class User {
 	@Column
 	private boolean isEnabled; //to check whether the user is verified or not
 	@Column
-	private String sessionId= StringUtils.EMPTY;
+	private String sessionId;
 
 }

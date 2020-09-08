@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Random;
-import java.util.UUID;
 
 @Service
 public class LogInService {
@@ -26,10 +25,17 @@ public class LogInService {
     public WrapperResponse logInUser(LogInRequest logInRequest){
         String hashedPassword=Hashing.sha512().hashString(logInRequest.getPassword(), StandardCharsets.UTF_8).toString();
         User user=userRepo.findByEmailAndPassword(logInRequest.getEmailId(),hashedPassword);
-        if(Objects.isNull(user))
+        if(Objects.isNull(user)) {
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Oops wrong password/email!").build();
+        }
+        else if(!user.isEnabled()){
+            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Your mail has not been verified yet.Check your past emails").build();
+        }
         else {
-            String sessionId=UUID.randomUUID().toString();
+            Random rand = new Random();
+            Integer randomNumber= rand.nextInt(10000)+10;
+            String randomString=user.getEmail()+randomNumber.toString();
+            String sessionId= Hashing.sha1().hashString(randomString, StandardCharsets.UTF_8).toString();
             user.setSessionId(sessionId);
             userRepo.save(user);
             return WrapperResponse.builder().data(sessionId).build();
