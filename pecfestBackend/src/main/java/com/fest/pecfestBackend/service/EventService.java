@@ -8,6 +8,7 @@ import com.fest.pecfestBackend.request.EventRequest;
 import com.fest.pecfestBackend.response.TechnoCultEventResponse;
 import com.fest.pecfestBackend.response.WrapperResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ public class EventService {
     @Autowired
     private EventRepo eventRepo;
 
+    @Cacheable("eventsByClubName")
     public WrapperResponse getEventsByOrganizingClubName(Club organizingClubName) {
         return WrapperResponse.builder().data(eventRepo.findByOrganizingClub(organizingClubName)).build();
     }
@@ -35,6 +37,7 @@ public class EventService {
             return WrapperResponse.builder().statusCode(HttpStatus.BAD_REQUEST.toString()).httpStatus(HttpStatus.BAD_REQUEST).statusMessage("The event name already exists!").build();
         }
     }
+    @Cacheable("eventList")
     public WrapperResponse getAllEvents() {
         List<Event> eventList=eventRepo.findAll();
         List<Event> culturalEventList=eventList.parallelStream().filter(event->event.getEventType()== EventType.CULTURAL).collect(Collectors.toList());
