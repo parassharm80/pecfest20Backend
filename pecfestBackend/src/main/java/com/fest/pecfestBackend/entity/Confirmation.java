@@ -1,9 +1,7 @@
 package com.fest.pecfestBackend.entity;
 
-//import java.sql.Date;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -12,6 +10,9 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Confirmation {
 	
 	@Id
