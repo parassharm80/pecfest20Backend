@@ -10,15 +10,15 @@ import com.google.common.hash.Hashing;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.Optional;
 
 
 @Service
@@ -38,12 +38,6 @@ public class UserAccountService {
 	@Value("${domain-name}")
 	private String domainHost;
 
-	public ModelAndView displayRegistration(ModelAndView modelAndView, User user) {
-		modelAndView.addObject("user",user);
-		modelAndView.setViewName("register");
-		return modelAndView;
-	}
-	
 	public WrapperResponse registerUser(UserSignUpRequest userSignUpRequest) {
 		User existingUser = userRepo.findByEmail(userSignUpRequest.getEmail());
 		if(Objects.isNull(existingUser)) {
@@ -72,23 +66,16 @@ public class UserAccountService {
 				"For emailVerification: Click here: "+domainHost+"?confirmation_token="+confirmationToken);
 		return message;
 	}
-	
-	@RequestMapping(value="/confirm", method = {RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView confirmUserAccount(ModelAndView modelAndView, @RequestParam String confirmationToken) {
+
+	public WrapperResponse confirmUserAccount(@RequestParam String confirmationToken) {
 		Confirmation confirmation = confirmationRepo.findByConfirmToken(confirmationToken);
-		if(confirmation!=null) {
+		if(Optional.ofNullable(confirmation).isPresent()) {
 			User user = userRepo.findByEmail(confirmation.getUser().getEmail());
 			user.setVerified(true);
 			userRepo.save(user);
-			modelAndView.setViewName("Account Verified");
-			
+			return WrapperResponse.builder().statusMessage("Verified. Now you can log in at PECFEST Website").build();
 		}
-		else {
-			modelAndView.addObject("message","This link is invalid or broken!");
-			modelAndView.setViewName("Error");
-			
-		}
-		return modelAndView;
+		return WrapperResponse.builder().statusMessage("This link is invalid").httpStatus(HttpStatus.BAD_REQUEST).build();
 	}
 	
 }
