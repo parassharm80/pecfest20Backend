@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -51,7 +50,7 @@ public class UserAccountService {
 			userRepo.save(newUser);
 			Confirmation confirmation = new Confirmation(newUser);
 			confirmationRepo.save(confirmation);
-			emailSenderService.sendEmail(createEmailMessage(newUser.getPecFestId(), newUser.getEmail(),confirmation.getConfirmToken()));
+			emailSenderService.sendEmail(createEmailMessage(newUser.getPecFestId(), newUser.getEmail(),confirmation.getConfirmationToken()));
 			return WrapperResponse.builder().statusMessage("Check email for PECFEST ID and verification.").build();
 		}
 
