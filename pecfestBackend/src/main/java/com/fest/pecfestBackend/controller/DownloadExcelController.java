@@ -1,22 +1,17 @@
 package com.fest.pecfestBackend.controller;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-
-
+import com.fest.pecfestBackend.service.EventUsersService;
+import com.fest.pecfestBackend.service.ExcelFileExporter;
+import com.fest.pecfestBackend.service.UserService;
 import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.fest.pecfestBackend.service.*;
-import com.fest.pecfestBackend.entity.User;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 @Controller
 public class DownloadExcelController {

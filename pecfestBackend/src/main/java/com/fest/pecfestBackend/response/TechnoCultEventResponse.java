@@ -16,4 +16,6 @@ import java.util.List;
 public class TechnoCultEventResponse {
     private List<Event> culturalEvent;
     private List<Event> technicalEvent;
+    private List<Event> lecture;
+    private List<Event> workshop;
 }

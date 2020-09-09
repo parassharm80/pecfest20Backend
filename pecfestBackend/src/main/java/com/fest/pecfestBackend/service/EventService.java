@@ -39,7 +39,10 @@ public class EventService {
         List<Event> eventList=eventRepo.findAll();
         List<Event> culturalEventList=eventList.parallelStream().filter(event->event.getEventType()== EventType.CULTURAL).collect(Collectors.toList());
         List<Event> technicalEventList=eventList.parallelStream().filter(event->event.getEventType()== EventType.TECHNICAL).collect(Collectors.toList());
-        return WrapperResponse.builder().data(TechnoCultEventResponse.builder().culturalEvent(culturalEventList).technicalEvent(technicalEventList).build()).build();
+        List<Event> lectureEventList=eventList.parallelStream().filter(event->event.getEventType()== EventType.LECTURE).collect(Collectors.toList());
+        List<Event> workshopEventList=eventList.parallelStream().filter(event->event.getEventType()== EventType.WORKSHOP).collect(Collectors.toList());
+        return WrapperResponse.builder().data(TechnoCultEventResponse.builder().culturalEvent(culturalEventList).technicalEvent(technicalEventList).
+                workshop(workshopEventList).lecture(lectureEventList).build()).build();
     }
 
     private Event getNewEvent(EventRequest addEventRequest) {

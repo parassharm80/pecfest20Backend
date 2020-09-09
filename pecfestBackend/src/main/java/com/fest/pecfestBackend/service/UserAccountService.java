@@ -74,7 +74,7 @@ public class UserAccountService {
 			userRepo.save(user);
 			return WrapperResponse.builder().statusMessage("Verified. Now you can log in at PECFEST Website").build();
 		}
-		return WrapperResponse.builder().statusMessage("This link is invalid").httpStatus(HttpStatus.BAD_REQUEST).build();
+		return WrapperResponse.builder().statusMessage("Invalid link").httpStatus(HttpStatus.BAD_REQUEST).build();
 	}
 	
 }
