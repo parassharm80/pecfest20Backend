@@ -41,9 +41,9 @@ public class EventRegistrationService {
                     return WrapperResponse.builder().httpStatus(HttpStatus.BAD_REQUEST).statusMessage("Team Name already exists").build();
                 }
                 else{
-                    Team.builder().eventId(eventId).leaderPecFestId(pecFestIds.get(0)).memberPecFestIdList(String.join(",", pecFestIds)).teamName(teamName)
+                    teamRepo.save(Team.builder().eventId(eventId).leaderPecFestId(pecFestIds.get(0)).memberPecFestIdList(String.join(",", pecFestIds)).teamName(teamName)
                             .leaderId(userRepo.findByPecFestId(pecFestIds.get(0)).getId())
-                            .build();
+                            .build());
                     return WrapperResponse.builder().statusMessage("Event Registration is successful").build();
                 }
            }

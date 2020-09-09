@@ -78,6 +78,7 @@ public class LogInLogOutService {
     public WrapperResponse logOutUser(String sessionId) {
         User user=userRepo.findBySessionId(sessionId);
         user.setSessionId(StringUtils.EMPTY);
+        userRepo.save(user);
         return WrapperResponse.builder().statusMessage("Logged Out").data(StringUtils.EMPTY).build();
     }
 }
