@@ -51,6 +51,10 @@ public class User {
 	private String sessionId;
 	@Column
 	private Long otpForPasswordReset;
+	@Column
+	private String contactNo;
+	@Column
+	private String collegeName;
 	public String getName(){
 		return this.firstName+this.lastName;
 	}

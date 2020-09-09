@@ -27,5 +27,8 @@ public class UserSignUpRequest {
     private String password;
     private String gender;
     private Long yearOfEducation;
-
+    @NotBlank
+    private String collegeName;
+    @NotBlank
+    private String contactNo;
 }

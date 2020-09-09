@@ -44,14 +44,14 @@ public class UserAccountService {
 			User newUser=User.builder().email(userSignUpRequest.getEmail()).firstName(userSignUpRequest.getFirstName()).lastName(userSignUpRequest.getLastName())
 					.gender(userSignUpRequest.getGender()).isVerified(false).otpForPasswordReset(null)
 					.password(hashedPassword).sessionId(StringUtils.EMPTY).yearOfEducation(userSignUpRequest.getYearOfEducation())
-					.build();
+					.contactNo(userSignUpRequest.getContactNo()).collegeName(userSignUpRequest.getCollegeName()).build();
 			userRepo.save(newUser);
 			newUser.setPecFestId("PECFEST"+ newUser.getFirstName().charAt(0)+newUser.getLastName().charAt(0)+newUser.getId().toString());
 			userRepo.save(newUser);
 			Confirmation confirmation = new Confirmation(newUser);
 			confirmationRepo.save(confirmation);
 			emailSenderService.sendEmail(createEmailMessage(newUser.getPecFestId(), newUser.getEmail(),confirmation.getConfirmationToken()));
-			return WrapperResponse.builder().statusMessage("Check email for PECFEST ID and verification.").build();
+			return WrapperResponse.builder().statusMessage("Check email for PECFEST Username and verification.").build();
 		}
 
 		return WrapperResponse.builder().httpStatus(HttpStatus.BAD_REQUEST).statusMessage("EmailID already registered").build();
@@ -61,7 +61,7 @@ public class UserAccountService {
 		message.setTo(emailId);
 		message.setFrom(mailUsername);
 		message.setSubject("PECFEST ID and Email Verification");
-		message.setText("Your PECFEST 2020 Id is: "+pecFestId+". This ID will be used for events' registration. "+
+		message.setText("Your PECFEST 2020 Username is: "+pecFestId+". This ID will be used for events' registration. "+
 				"For emailVerification: Click here: "+domainHost+"/register/verify?confirmation_token="+confirmationToken);
 		return message;
 	}

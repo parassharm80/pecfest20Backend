@@ -25,6 +25,7 @@ public class EventRegistrationService {
     private SessionService sessionService;
     @Autowired
     private EventRepo eventRepo;
+
     public WrapperResponse registerForAnEvent(Long eventId, List<String> pecFestIds, String teamName, String sessionId) {
         User user=sessionService.verifySessionId(sessionId);
         if(Objects.isNull(user)) {

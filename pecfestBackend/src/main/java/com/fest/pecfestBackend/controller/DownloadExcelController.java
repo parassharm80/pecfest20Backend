@@ -7,7 +7,6 @@ import com.fest.pecfestBackend.enums.EventCount;
 import com.fest.pecfestBackend.repository.EventRepo;
 import com.fest.pecfestBackend.repository.TeamRepo;
 import com.fest.pecfestBackend.repository.UserRepo;
-import com.fest.pecfestBackend.service.EventUsersService;
 import com.fest.pecfestBackend.service.ExcelFileExporter;
 import com.fest.pecfestBackend.service.UserService;
 import com.google.common.base.CharMatcher;
@@ -31,9 +30,6 @@ public class DownloadExcelController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private EventUsersService eventUsersService;
     @Autowired
     private EventRepo eventRepo;
     @Autowired
@@ -74,8 +70,9 @@ public class DownloadExcelController {
             else{
                 List<Team> teamList=teamRepo.findAllByEventId(eventId);
                 Map<Team,List<User>> teams= new HashMap<>();
-                List<Long> idList=new ArrayList<>();
+
                 for(Team team:teamList) {
+                    List<Long> idList=new ArrayList<>();
                     idList.addAll(team.getMemberPecFestIdList().parallelStream().map(pecFestId->Long.valueOf(CharMatcher.inRange('0','9').retainFrom(pecFestId))).collect(Collectors.toList()));
                     teams.put(team,userRepo.findAllById(idList));
                 }
@@ -83,11 +80,6 @@ public class DownloadExcelController {
                 IOUtils.copy(stream, response.getOutputStream());
             }
         }
-//        if(eventUsersService.fetchEvent(id).getIsTeam()!=1) {
-//            ByteArrayInputStream stream = excelFileExporter.contactListToExcelFile(eventUsersService.fetchAllUsers(id));
-//            IOUtils.copy(stream, response.getOutputStream());
-//        }else{
-//
-//        }
+
     }
 }

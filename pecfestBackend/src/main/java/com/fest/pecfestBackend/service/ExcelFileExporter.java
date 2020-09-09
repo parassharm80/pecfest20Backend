@@ -38,10 +38,18 @@ public class ExcelFileExporter {
             cell.setCellStyle(headerCellStyle);
 
             cell = row.createCell(2);
-            cell.setCellValue("year of education");
+            cell.setCellValue("Year of Education");
             cell.setCellStyle(headerCellStyle);
 
             cell = row.createCell(3);
+            cell.setCellValue("PECFEST ID");
+            cell.setCellStyle(headerCellStyle);
+
+            cell = row.createCell(4);
+            cell.setCellValue("Contact no.");
+            cell.setCellStyle(headerCellStyle);
+
+            cell = row.createCell(5);
             cell.setCellValue("Gender");
             cell.setCellStyle(headerCellStyle);
 
@@ -51,7 +59,9 @@ public class ExcelFileExporter {
                 dataRow.createCell(0).setCellValue(customers.get(i).getName());
                 dataRow.createCell(1).setCellValue(customers.get(i).getEmail());
                 dataRow.createCell(2).setCellValue(customers.get(i).getYearOfEducation());
-                dataRow.createCell(3).setCellValue(customers.get(i).getGender());
+                dataRow.createCell(3).setCellValue(customers.get(i).getPecFestId());
+                dataRow.createCell(4).setCellValue(customers.get(i).getContactNo());
+                dataRow.createCell(5).setCellValue(customers.get(i).getGender());
             }
 
 
@@ -59,7 +69,8 @@ public class ExcelFileExporter {
             sheet.autoSizeColumn(1);
             sheet.autoSizeColumn(2);
             sheet.autoSizeColumn(3);
-
+            sheet.autoSizeColumn(4);
+            sheet.autoSizeColumn(5);
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             workbook.write(outputStream);
             return new ByteArrayInputStream(outputStream.toByteArray());
@@ -96,10 +107,18 @@ public class ExcelFileExporter {
             cell.setCellStyle(headerCellStyle);
 
             cell = row.createCell(4);
-            cell.setCellValue("year of education");
+            cell.setCellValue("Year of Education");
             cell.setCellStyle(headerCellStyle);
 
             cell = row.createCell(5);
+            cell.setCellValue("PECFEST ID");
+            cell.setCellStyle(headerCellStyle);
+
+            cell = row.createCell(6);
+            cell.setCellValue("Contact no.");
+            cell.setCellStyle(headerCellStyle);
+
+            cell = row.createCell(7);
             cell.setCellValue("Gender");
             cell.setCellStyle(headerCellStyle);
             int i=1;
@@ -118,7 +137,9 @@ public class ExcelFileExporter {
                     innerDataRow.createCell(2).setCellValue(entry.getValue().get(j).getName());
                     innerDataRow.createCell(3).setCellValue(entry.getValue().get(j).getEmail());
                     innerDataRow.createCell(4).setCellValue(entry.getValue().get(j).getYearOfEducation());
-                    innerDataRow.createCell(5).setCellValue(entry.getValue().get(j).getGender());
+                    innerDataRow.createCell(5).setCellValue(entry.getValue().get(j).getPecFestId());
+                    innerDataRow.createCell(6).setCellValue(entry.getValue().get(j).getContactNo());
+                    innerDataRow.createCell(7).setCellValue(entry.getValue().get(j).getGender());
                     i++;
                  }
                 i++;
@@ -130,6 +151,8 @@ public class ExcelFileExporter {
             sheet.autoSizeColumn(3);
             sheet.autoSizeColumn(4);
             sheet.autoSizeColumn(5);
+            sheet.autoSizeColumn(6);
+            sheet.autoSizeColumn(7);
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             workbook.write(outputStream);
