@@ -28,7 +28,7 @@ public class EventRegistrationService {
     public WrapperResponse registerForAnEvent(Long eventId, List<String> pecFestIds, String teamName, String sessionId) {
         User user=sessionService.verifySessionId(sessionId);
         if(Objects.isNull(user)) {
-            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Invalid sessionId.Log in again").build();
+            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Please Log in first").build();
         }
         else{
             if(!eventRepo.existsByEventID(eventId))

@@ -54,7 +54,7 @@ public class UserAccountService {
 			return WrapperResponse.builder().statusMessage("Check email for PECFEST ID and verification.").build();
 		}
 
-		return WrapperResponse.builder().statusMessage("EmailID already registered").build();
+		return WrapperResponse.builder().httpStatus(HttpStatus.BAD_REQUEST).statusMessage("EmailID already registered").build();
 	}
 	private SimpleMailMessage createEmailMessage(String pecFestId,String emailId,String confirmationToken) {
 		SimpleMailMessage message=new SimpleMailMessage();
@@ -67,7 +67,7 @@ public class UserAccountService {
 	}
 
 	public WrapperResponse confirmUserAccount(@RequestParam String confirmationToken) {
-		Confirmation confirmation = confirmationRepo.findByConfirmToken(confirmationToken);
+		Confirmation confirmation = confirmationRepo.findByConfirmationToken(confirmationToken);
 		if(Optional.ofNullable(confirmation).isPresent()) {
 			User user = userRepo.findByEmail(confirmation.getUser().getEmail());
 			user.setVerified(true);
