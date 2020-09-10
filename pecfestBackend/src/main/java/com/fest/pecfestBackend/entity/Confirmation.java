@@ -1,35 +1,26 @@
 package com.fest.pecfestBackend.entity;
 
-//import java.sql.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import lombok.*;
 
-import lombok.Getter;
-import lombok.Setter;
-
+import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Confirmation {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long tokenid;
+	private long tokenId;
 	
-	@Column(name="confirm_token")
-	private String confirmToken;
+	@Column(name="confirmation_token")
+	private String confirmationToken;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;
@@ -41,7 +32,7 @@ public class Confirmation {
 	public Confirmation(User user) {
 		this.user = user;
 		createdDate = new Date();
-		confirmToken = UUID.randomUUID().toString();
+		confirmationToken = UUID.randomUUID().toString();
 	}
 	
 	

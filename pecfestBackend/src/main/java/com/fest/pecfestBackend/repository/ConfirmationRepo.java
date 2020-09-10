@@ -7,5 +7,5 @@ import com.fest.pecfestBackend.entity.Confirmation;
 
 @Repository
 public interface ConfirmationRepo extends CrudRepository<Confirmation, String> {
-	Confirmation findByConfirmToken(String confirmation);
+	Confirmation findByConfirmationToken(String confirmationToken);
 }

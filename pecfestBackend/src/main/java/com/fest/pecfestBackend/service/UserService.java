@@ -5,6 +5,7 @@ import com.fest.pecfestBackend.repository.UserRepo;
 import com.fest.pecfestBackend.response.WrapperResponse;
 import com.google.common.hash.Hashing;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -28,7 +29,7 @@ public class UserService {
 		{
 			return WrapperResponse.<User>builder().data(body).
 			statusCode("FAILED").
-			statusMessage("CONFIGURATION ALREADY EXISTS").build();
+			statusMessage("CONFIGURATION ALREADY EXISTS").httpStatus(HttpStatus.BAD_REQUEST).build();
 		}
 		// Storing password hash instead of password
 		String hashedPassword= Hashing.sha512().hashString(body.getPassword(), StandardCharsets.UTF_8).toString();

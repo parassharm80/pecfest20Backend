@@ -1,20 +1,23 @@
 package com.fest.pecfestBackend.service;
 
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import com.fest.pecfestBackend.entity.EventUsers;
 import com.fest.pecfestBackend.entity.Team;
 import com.fest.pecfestBackend.entity.User;
+import com.fest.pecfestBackend.repository.EventUsersRepo;
 import com.fest.pecfestBackend.repository.TeamRepo;
 import com.fest.pecfestBackend.repository.UserRepo;
+import com.fest.pecfestBackend.response.WrapperResponse;
+import com.google.common.base.CharMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fest.pecfestBackend.entity.EventUsers;
-import com.fest.pecfestBackend.repository.EventUsersRepo;
-import com.fest.pecfestBackend.response.WrapperResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class EventUsersService {
@@ -110,9 +113,8 @@ public class EventUsersService {
 		Map<Team,List<User>> result = new HashMap<>();
 
 		for(Team team:teams){
-			List<Long> list = Arrays.stream(team.getStudentId())
-					.boxed()
-					.collect(Collectors.toList());
+			List<String> pecFestIdList=team.getMemberPecFestIdList();
+			List<Long> list=pecFestIdList.parallelStream().map(pecFestId->Long.valueOf(CharMatcher.inRange('0','9').retainFrom(pecFestId))).collect(Collectors.toList());
 			List<User> users =userRepo.findAllById(list);
 			result.put(team,users);
 		}
