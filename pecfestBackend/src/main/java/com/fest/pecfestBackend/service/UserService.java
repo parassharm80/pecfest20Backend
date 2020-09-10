@@ -1,15 +1,21 @@
 package com.fest.pecfestBackend.service;
 
+import com.fest.pecfestBackend.entity.Team;
 import com.fest.pecfestBackend.entity.User;
+import com.fest.pecfestBackend.repository.EventRepo;
+import com.fest.pecfestBackend.repository.TeamRepo;
 import com.fest.pecfestBackend.repository.UserRepo;
 import com.fest.pecfestBackend.response.WrapperResponse;
 import com.google.common.hash.Hashing;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -17,6 +23,10 @@ public class UserService {
 	
 	@Autowired
 	private UserRepo userRepo;
+	@Autowired
+	private TeamRepo teamRepo;
+	@Autowired
+	private EventRepo eventRepo;
 	
 	public WrapperResponse<List<User>> getUser() {
 		return WrapperResponse.<List<User>>builder()
@@ -76,4 +86,19 @@ public class UserService {
 				.data(userRepo.findByRequireAccommodationTrue()).build();
 	}
 
+	@Cacheable("registeredEventsForUser")
+    public WrapperResponse getRegisteredEventsForUser(String sessionId) {
+		User user=userRepo.findBySessionId(sessionId);
+		if(Objects.isNull(user))
+			return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Invalid sessionId").build();
+		else{
+			List<Long> eventsRegisteredIdList=new ArrayList<>();
+
+			List<Team> teams=teamRepo.findAll();
+			for(Team team:teams)
+				if(team.getMemberPecFestIdList().contains(user.getPecFestId()))
+					eventsRegisteredIdList.add(team.getEventId());
+				return WrapperResponse.builder().data(eventRepo.findAllById(eventsRegisteredIdList)).build();
+		}
+    }
 }

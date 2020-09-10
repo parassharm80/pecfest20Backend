@@ -36,5 +36,10 @@ public class UserController {
 	public WrapperResponse<User> accommodationRequired(@PathVariable("id") Long id) {
 		return userService.setAccommodation(id);
 	}
+	@GetMapping("/registered-events")
+	public WrapperResponse getRegisteredEvents(@RequestHeader("session_id") String sessionId) {
+		return userService.getRegisteredEventsForUser(sessionId);
+	}
+
 	
 }
