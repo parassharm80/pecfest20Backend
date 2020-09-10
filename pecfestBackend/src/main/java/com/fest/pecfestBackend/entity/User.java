@@ -56,6 +56,6 @@ public class User {
 	@Column
 	private String collegeName;
 	public String getName(){
-		return this.firstName+this.lastName;
+		return this.firstName+" "+this.lastName;
 	}
 }

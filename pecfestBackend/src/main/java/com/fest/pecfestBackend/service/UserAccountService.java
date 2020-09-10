@@ -53,6 +53,12 @@ public class UserAccountService {
 			emailSenderService.sendEmail(createEmailMessage(newUser.getPecFestId(), newUser.getEmail(),confirmation.getConfirmationToken()));
 			return WrapperResponse.builder().statusMessage("Check email for PECFEST Username and verification.").build();
 		}
+		else if(!existingUser.isVerified()){
+			Confirmation confirmation = new Confirmation(existingUser);
+			confirmationRepo.save(confirmation);
+			emailSenderService.sendEmail(createEmailMessage(existingUser.getPecFestId(), existingUser.getEmail(),confirmation.getConfirmationToken()));
+			return WrapperResponse.builder().statusMessage("Check your email again for verification.").build();
+		}
 
 		return WrapperResponse.builder().httpStatus(HttpStatus.BAD_REQUEST).statusMessage("EmailID already registered").build();
 	}
