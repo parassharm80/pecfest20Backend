@@ -50,4 +50,5 @@ public class Event {
 
     private String prizeMoneyWorth;
     private String venue;
+    private String rules;
 }
