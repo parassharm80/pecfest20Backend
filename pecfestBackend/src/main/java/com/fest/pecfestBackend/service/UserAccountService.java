@@ -60,7 +60,7 @@ public class UserAccountService {
 			return WrapperResponse.builder().statusMessage("Check your email again for verification.").build();
 		}
 
-		return WrapperResponse.builder().httpStatus(HttpStatus.BAD_REQUEST).statusMessage("EmailID already registered").build();
+		return WrapperResponse.builder().httpStatus(HttpStatus.BAD_REQUEST).statusMessage("EmailID already registered and verified").build();
 	}
 	private SimpleMailMessage createEmailMessage(String pecFestId,String emailId,String confirmationToken) {
 		SimpleMailMessage message=new SimpleMailMessage();
@@ -68,7 +68,7 @@ public class UserAccountService {
 		message.setFrom(mailUsername);
 		message.setSubject("PECFEST ID and Email Verification");
 		message.setText("Your PECFEST 2020 Username is: "+pecFestId+". This ID will be used for events' registration. "+
-				"For emailVerification: Click here: "+domainHost+"/register/verify?confirmation_token="+confirmationToken);
+				"For emailVerification: Click here: "+domainHost+"/verify-email?verification_token="+confirmationToken);
 		return message;
 	}
 
