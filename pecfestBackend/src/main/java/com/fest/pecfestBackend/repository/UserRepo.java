@@ -16,5 +16,5 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
 	User findBySessionId(String sessionId);
 	boolean existsByPecFestIdAndIsVerified(String pecFestId,boolean isVerified);
 	User findByPecFestId(String pecFestId);
-	User findByEmailAndOtpForPasswordReset(String email,Long otpForPasswordReset);
+	User findByIdAndOtpForPasswordReset(Long id,String otpForPasswordReset);
 }

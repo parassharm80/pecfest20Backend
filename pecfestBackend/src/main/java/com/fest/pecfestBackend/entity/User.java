@@ -50,7 +50,7 @@ public class User {
 	@Column
 	private String sessionId;
 	@Column
-	private Long otpForPasswordReset;
+	private String otpForPasswordReset;
 	@Column
 	private String contactNo;
 	@Column

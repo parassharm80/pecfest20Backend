@@ -8,6 +8,7 @@ import com.fest.pecfestBackend.response.WrapperResponse;
 import com.google.common.hash.Hashing;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class LogInLogOutService {
@@ -22,6 +24,9 @@ public class LogInLogOutService {
     private UserRepo userRepo;
     @Autowired
     private EmailSenderService emailSenderService;
+
+    @Value("${domain-name}")
+    private String domainHost;
 
     public WrapperResponse logInUser(LogInRequest logInRequest){
         String hashedPassword=Hashing.sha512().hashString(logInRequest.getPassword(), StandardCharsets.UTF_8).toString();
@@ -46,26 +51,25 @@ public class LogInLogOutService {
         User user=userRepo.findByEmail(emailId);
         if(Objects.isNull(user)||!user.isVerified())
             return WrapperResponse.builder().httpStatus(HttpStatus.BAD_REQUEST).statusMessage("You have not been registered/verified yet").build();
-        Random rand = new Random();
-        int verificationCode = rand.nextInt(900000) + 100000;
-        emailSenderService.sendEmail(createEmailMessage(verificationCode, emailId));
-        user.setOtpForPasswordReset((long) verificationCode);
+        String randomOtpCode=UUID.randomUUID().toString();
+        emailSenderService.sendEmail(createEmailMessage(randomOtpCode, emailId,user.getId()));
+        user.setOtpForPasswordReset(randomOtpCode);
         return WrapperResponse.builder().build();
     }
 
-    private SimpleMailMessage createEmailMessage(int verificationCode,String emailId) {
+    private SimpleMailMessage createEmailMessage(String verificationCode,String emailId,Long userId) {
         SimpleMailMessage message=new SimpleMailMessage();
         message.setTo(emailId);
         message.setFrom("registrations@pecfest.in");
         message.setSubject("Reset Password Instructions");
-        message.setText("The verification code for resetting the password is: "+verificationCode);
+        message.setText("Click here to reset password : "+domainHost+"/reset-password?verification_token="+verificationCode+"&id="+userId);
         return message;
     }
 
     public WrapperResponse resetPassword(ResetPasswordRequest resetPasswordRequest) {
-        User user=userRepo.findByEmailAndOtpForPasswordReset(resetPasswordRequest.getEmailId(),resetPasswordRequest.getVerificationCode());
+        User user=userRepo.findByIdAndOtpForPasswordReset(resetPasswordRequest.getUserId(),resetPasswordRequest.getVerificationCode());
         if(Objects.isNull(user)||Objects.isNull(user.getOtpForPasswordReset()))
-            return WrapperResponse.builder().httpStatus(HttpStatus.BAD_REQUEST).statusMessage("Wrong verification Code").build();
+            return WrapperResponse.builder().httpStatus(HttpStatus.BAD_REQUEST).statusMessage("Uhhh. Ohhh. Broken Link").build();
         else{
             String newHashedPassword=Hashing.sha512().hashString(resetPasswordRequest.getPassword(), StandardCharsets.UTF_8).toString();
             user.setPassword(newHashedPassword);
