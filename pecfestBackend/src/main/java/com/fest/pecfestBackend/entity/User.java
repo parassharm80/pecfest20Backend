@@ -60,7 +60,7 @@ public class User {
 	public String getName(){
 		return this.firstName+" "+this.lastName;
 	}
-	public List<String> getOtpList(){
+	public List<String> fetchOtpList(){
 		return Arrays.asList(otpForPasswordReset.split(","));
 	}
 }

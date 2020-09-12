@@ -5,6 +5,7 @@ import com.fest.pecfestBackend.entity.User;
 import com.fest.pecfestBackend.repository.EventRepo;
 import com.fest.pecfestBackend.repository.TeamRepo;
 import com.fest.pecfestBackend.repository.UserRepo;
+import com.fest.pecfestBackend.response.UserDetailsResponse;
 import com.fest.pecfestBackend.response.WrapperResponse;
 import com.google.common.hash.Hashing;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,7 +112,9 @@ public class UserService {
 		if(Objects.isNull(user))
 			return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Invalid sessionId").build();
 		else
-			return WrapperResponse.builder().data(user).build();
+			return WrapperResponse.builder().data(UserDetailsResponse.builder().collegeName(user.getCollegeName()).contactNo(user.getContactNo()
+			).email(user.getEmail()).fullName(user.getName()).gender(user.getGender()).yearOfEducation(user.getYearOfEducation()
+			).id(user.getId()).pecFestId(user.getPecFestId()).build()).build();
 
 	}
 }
