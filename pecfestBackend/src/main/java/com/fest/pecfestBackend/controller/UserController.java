@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
+@CrossOrigin
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -40,6 +41,9 @@ public class UserController {
 	public WrapperResponse getRegisteredEvents(@RequestHeader("session_id") String sessionId) {
 		return userService.getRegisteredEventsForUser(sessionId);
 	}
-
+	@GetMapping("/details")
+	public WrapperResponse getUserDetails(@RequestHeader("session_id") String sessionId){
+		return userService.getUserDetails(sessionId);
+	}
 	
 }

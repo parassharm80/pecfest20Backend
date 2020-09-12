@@ -88,6 +88,8 @@ public class UserService {
 
 	@Cacheable("registeredEventsForUser")
     public WrapperResponse getRegisteredEventsForUser(String sessionId) {
+		if(Objects.isNull(sessionId)||sessionId.length()<2)
+			return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Invalid sessionId").build();
 		User user=userRepo.findBySessionId(sessionId);
 		if(Objects.isNull(user))
 			return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Invalid sessionId").build();
@@ -101,4 +103,15 @@ public class UserService {
 				return WrapperResponse.builder().data(eventRepo.findAllById(eventsRegisteredIdList)).build();
 		}
     }
+
+	public WrapperResponse getUserDetails(String sessionId) {
+		if(Objects.isNull(sessionId)||sessionId.length()<2)
+			return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Invalid sessionId").build();
+		User user=userRepo.findBySessionId(sessionId);
+		if(Objects.isNull(user))
+			return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Invalid sessionId").build();
+		else
+			return WrapperResponse.builder().data(user).build();
+
+	}
 }

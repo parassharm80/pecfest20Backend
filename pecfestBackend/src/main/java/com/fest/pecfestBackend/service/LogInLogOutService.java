@@ -88,6 +88,8 @@ public class LogInLogOutService {
     }
 
     public WrapperResponse logOutUser(String sessionId) {
+        if(Objects.isNull(sessionId)||sessionId.length()<2)
+            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Invalid sessionId").build();
         User user=userRepo.findBySessionId(sessionId);
         user.setSessionId(StringUtils.EMPTY);
         userRepo.save(user);
