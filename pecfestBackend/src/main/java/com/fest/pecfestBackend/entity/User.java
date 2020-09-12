@@ -3,6 +3,8 @@ package com.fest.pecfestBackend.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
 @Getter
@@ -50,12 +52,15 @@ public class User {
 	@Column
 	private String sessionId;
 	@Column
-	private Long otpForPasswordReset;
+	private String otpForPasswordReset;
 	@Column
 	private String contactNo;
 	@Column
 	private String collegeName;
 	public String getName(){
-		return this.firstName+this.lastName;
+		return this.firstName+" "+this.lastName;
+	}
+	public List<String> getOtpList(){
+		return Arrays.asList(otpForPasswordReset.split(","));
 	}
 }

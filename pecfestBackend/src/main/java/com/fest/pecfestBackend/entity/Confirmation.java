@@ -32,7 +32,7 @@ public class Confirmation {
 	public Confirmation(User user) {
 		this.user = user;
 		createdDate = new Date();
-		confirmationToken = UUID.randomUUID().toString();
+		confirmationToken = UUID.randomUUID().toString()+user.getId();
 	}
 	
 	

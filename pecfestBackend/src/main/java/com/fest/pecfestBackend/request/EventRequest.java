@@ -34,4 +34,5 @@ public class EventRequest {
     private String eventDescription;
     private String prizeMoneyWorth;
     private String venue;
+    private String rules;
 }
