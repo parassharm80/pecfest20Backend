@@ -14,6 +14,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
@@ -51,9 +52,16 @@ public class LogInLogOutService {
         User user=userRepo.findByEmail(emailId);
         if(Objects.isNull(user)||!user.isVerified())
             return WrapperResponse.builder().httpStatus(HttpStatus.BAD_REQUEST).statusMessage("You have not been registered/verified yet").build();
-        String randomOtpCode=UUID.randomUUID().toString();
+        String randomOtpCode=UUID.randomUUID().toString()+user.getId();
         emailSenderService.sendEmail(createEmailMessage(randomOtpCode, emailId,user.getId()));
-        user.setOtpForPasswordReset(randomOtpCode);
+        List<String> otpList=user.getOtpList();
+        if(Objects.isNull(otpList))
+            user.setOtpForPasswordReset(randomOtpCode);
+        else {
+            otpList.add(randomOtpCode);
+            user.setOtpForPasswordReset(String.join(",", otpList));
+        }
+        userRepo.save(user);
         return WrapperResponse.builder().build();
     }
 

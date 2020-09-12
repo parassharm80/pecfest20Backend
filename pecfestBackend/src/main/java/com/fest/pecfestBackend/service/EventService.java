@@ -5,6 +5,8 @@ import com.fest.pecfestBackend.enums.Club;
 import com.fest.pecfestBackend.enums.EventType;
 import com.fest.pecfestBackend.repository.EventRepo;
 import com.fest.pecfestBackend.request.EventRequest;
+import com.fest.pecfestBackend.response.EventListByClubNameResponse;
+import com.fest.pecfestBackend.response.EventListResponse;
 import com.fest.pecfestBackend.response.TechnoCultEventResponse;
 import com.fest.pecfestBackend.response.WrapperResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +14,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -84,5 +84,31 @@ public class EventService {
         else{
             return WrapperResponse.builder().statusMessage("No such event exists").httpStatus(HttpStatus.BAD_REQUEST).statusCode(HttpStatus.BAD_REQUEST.toString()).build();
         }
+    }
+
+    @Cacheable("getAllEventsByClub")
+    public WrapperResponse getAllEventsByClub()  {
+        List<Event> eventList=eventRepo.findAll();
+        List<Event> culturalEventList=eventList.parallelStream().filter(event->event.getEventType()== EventType.CULTURAL).collect(Collectors.toList());
+        List<Event> technicalEventList=eventList.parallelStream().filter(event->event.getEventType()== EventType.TECHNICAL).collect(Collectors.toList());
+        List<Event> lectureEventList=eventList.parallelStream().filter(event->event.getEventType()== EventType.LECTURE).collect(Collectors.toList());
+        List<Event> workshopEventList=eventList.parallelStream().filter(event->event.getEventType()== EventType.WORKSHOP).collect(Collectors.toList());
+
+        return WrapperResponse.builder().data(EventListResponse.builder().culturalEvent(getListByClubName(culturalEventList)).technicalEvent(getListByClubName(technicalEventList)).
+                workshop(getListByClubName(workshopEventList)).lecture(getListByClubName(lectureEventList)).build()).build();
+    }
+
+    private List<EventListByClubNameResponse> getListByClubName(List<Event> eventList) {
+        Map<Club,List<Event>> map=new HashMap<>();
+        List<EventListByClubNameResponse> eventListByClubName=new ArrayList<>();
+        for(Event event:eventList) {
+            if (!map.containsKey(event.getOrganizingClub()))
+                map.put(event.getOrganizingClub(), new ArrayList<>());
+            map.get(event.getOrganizingClub()).add(event);
+        }
+        map.forEach((key,value)->{
+            eventListByClubName.add(EventListByClubNameResponse.builder().clubName(key).eventList(value).build());
+        });
+        return eventListByClubName;
     }
 }
