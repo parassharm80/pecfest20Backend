@@ -26,9 +26,9 @@ public class EventRegistrationService {
     @Autowired
     private EventRepo eventRepo;
 
-    public WrapperResponse registerForAnEvent(Long eventId, List<String> pecFestIds, String teamName, String sessionId) {
+    public WrapperResponse registerTeamForAnEvent(Long eventId, List<String> pecFestIds, String teamName, String sessionId) {
         if(Objects.isNull(sessionId)||sessionId.length()<2)
-        return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Invalid sessionId").build();
+        return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Please Log in first").build();
         User user=sessionService.verifySessionId(sessionId);
         if(Objects.isNull(user)) {
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Please Log in first").build();
@@ -55,5 +55,24 @@ public class EventRegistrationService {
            }
         }
 
+    }
+
+    public WrapperResponse registerAnIndividual(Long eventId, String sessionId) {
+        if(Objects.isNull(sessionId)||sessionId.length()<2)
+            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Please Log in first").build();
+        User user=sessionService.verifySessionId(sessionId);
+        if(Objects.isNull(user)) {
+            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Please Log in first").build();
+        }
+        else{
+            if(teamRepo.existsByTeamNameAndEventId(user.getPecFestId(),eventId))
+                return WrapperResponse.builder().httpStatus(HttpStatus.BAD_REQUEST).statusMessage("You have already been registered").build();
+            if(!eventRepo.existsByEventID(eventId))
+                return WrapperResponse.builder().statusMessage("No such event exists").httpStatus(HttpStatus.BAD_REQUEST).build();
+            teamRepo.save(Team.builder().eventId(eventId).leaderPecFestId(user.getPecFestId()).memberPecFestIdList(user.getPecFestId()).teamName(user.getPecFestId())
+                    .leaderId(user.getId())
+                    .build());
+            return WrapperResponse.builder().statusMessage("Event Registration is successful").build();
+        }
     }
 }

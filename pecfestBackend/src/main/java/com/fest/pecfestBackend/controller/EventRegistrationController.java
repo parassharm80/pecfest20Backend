@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/pecfest-registration")
 public class EventRegistrationController {
@@ -15,8 +16,12 @@ public class EventRegistrationController {
     private EventRegistrationService eventRegService;
 
     @PostMapping("/{event_id}/{team_name}")
-    public WrapperResponse registerForAnEvent(@PathVariable("event_id") Long eventId, @RequestBody List<String> pecFestIds, @RequestHeader("session_id") String sessionId,
+    public WrapperResponse registerTeamForAnEvent(@PathVariable("event_id") Long eventId, @RequestBody List<String> pecFestIds, @RequestHeader("session_id") String sessionId,
                                               @PathVariable(value = "team_name") String teamName){
-        return eventRegService.registerForAnEvent(eventId,pecFestIds,teamName,sessionId);
+        return eventRegService.registerTeamForAnEvent(eventId,pecFestIds,teamName,sessionId);
+    }
+    @PostMapping("/{event_id}")
+    public WrapperResponse registerIndividualForAnEvent(@PathVariable("event_id") Long eventId, @RequestHeader("session_id") String sessionId){
+        return eventRegService.registerAnIndividual(eventId,sessionId);
     }
 }
