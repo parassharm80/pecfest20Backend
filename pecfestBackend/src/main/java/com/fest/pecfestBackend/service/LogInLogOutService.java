@@ -52,9 +52,9 @@ public class LogInLogOutService {
         User user=userRepo.findByEmail(emailId);
         if(Objects.isNull(user)||!user.isVerified())
             return WrapperResponse.builder().httpStatus(HttpStatus.BAD_REQUEST).statusMessage("You have not been registered/verified yet").build();
-        String randomOtpCode=UUID.randomUUID().toString()+user.getId();
+        String randomOtpCode= UUID.randomUUID().toString()+user.getId();
         emailSenderService.sendEmail(createEmailMessage(randomOtpCode, emailId,user.getId()));
-        List<String> otpList=user.getOtpList();
+        List<String> otpList=user.fetchOtpList();
         if(Objects.isNull(otpList))
             user.setOtpForPasswordReset(randomOtpCode);
         else {
