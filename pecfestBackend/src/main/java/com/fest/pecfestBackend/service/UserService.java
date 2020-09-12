@@ -101,4 +101,13 @@ public class UserService {
 				return WrapperResponse.builder().data(eventRepo.findAllById(eventsRegisteredIdList)).build();
 		}
     }
+
+	public WrapperResponse getUserDetails(String sessionId) {
+		User user=userRepo.findBySessionId(sessionId);
+		if(Objects.isNull(user))
+			return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Invalid sessionId").build();
+		else
+			WrapperResponse.builder().data(user).build();
+
+	}
 }
