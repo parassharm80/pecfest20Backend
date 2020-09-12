@@ -13,6 +13,8 @@ import lombok.*;
 public class UserDetailsResponse {
     private String pecFestId;
     private String fullName;
+    private String firstName;
+    private String lastName;
     private Long id;
     private String email;
     private String collegeName;

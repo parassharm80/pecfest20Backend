@@ -114,7 +114,8 @@ public class UserService {
 		else
 			return WrapperResponse.builder().data(UserDetailsResponse.builder().collegeName(user.getCollegeName()).contactNo(user.getContactNo()
 			).email(user.getEmail()).fullName(user.getName()).gender(user.getGender()).yearOfEducation(user.getYearOfEducation()
-			).id(user.getId()).pecFestId(user.getPecFestId()).build()).build();
+			).id(user.getId()).pecFestId(user.getPecFestId())
+					.firstName(user.getFirstName()).lastName(user.getLastName()).build()).build();
 
 	}
 }
