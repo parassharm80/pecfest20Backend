@@ -1,11 +1,13 @@
 package com.fest.pecfestBackend.controller;
 
 import com.fest.pecfestBackend.entity.User;
+import com.fest.pecfestBackend.request.EditUserDetailsRequest;
 import com.fest.pecfestBackend.response.WrapperResponse;
 import com.fest.pecfestBackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -27,10 +29,10 @@ public class UserController {
 		return userService.addUser(body);
 	}
 	
-	@PatchMapping("/{id}")
-	public WrapperResponse<User> editUser(@PathVariable("id") Long id
-			,@RequestBody User body) {
-		return userService.editUser(id, body);
+	@PutMapping("/{id}")
+	public WrapperResponse editUser(@PathVariable("id") Long id
+			,@RequestBody @Valid EditUserDetailsRequest editUserDetailsRequest) {
+		return userService.editUser(id, editUserDetailsRequest);
 	}
 
 	@PatchMapping("/accommodation/{id}")

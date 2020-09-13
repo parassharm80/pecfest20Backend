@@ -5,6 +5,7 @@ import com.fest.pecfestBackend.entity.User;
 import com.fest.pecfestBackend.repository.EventRepo;
 import com.fest.pecfestBackend.repository.TeamRepo;
 import com.fest.pecfestBackend.repository.UserRepo;
+import com.fest.pecfestBackend.request.EditUserDetailsRequest;
 import com.fest.pecfestBackend.response.UserDetailsResponse;
 import com.fest.pecfestBackend.response.WrapperResponse;
 import com.google.common.hash.Hashing;
@@ -17,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 
 @Service
@@ -49,24 +51,23 @@ public class UserService {
 		return WrapperResponse.<User>builder().data(body).build();
 	}
 	
-	public WrapperResponse<User> editUser(Long id, User body) {
-		
-		if(!userRepo.existsById(id))
+	public WrapperResponse editUser(Long id, EditUserDetailsRequest editUserDetailsRequest) {
+		Optional<User> user=userRepo.findById(id);
+		if(user.isPresent())
 		{
-			return WrapperResponse.<User>builder().data(body).
-			statusCode("FAILED").
-			statusMessage("CONFIGURATION DOES NOT EXISTS").build();			
+			User existingUser=user.get();
+			existingUser.setFirstName(editUserDetailsRequest.getFirstName());
+			existingUser.setLastName(editUserDetailsRequest.getLastName());
+			existingUser.setCollegeName(editUserDetailsRequest.getCollegeName());
+			existingUser.setContactNo(editUserDetailsRequest.getContactNo());
+			existingUser.setGender(editUserDetailsRequest.getGender());
+			existingUser.setYearOfEducation(editUserDetailsRequest.getYearOfEducation());
+			userRepo.save(existingUser);
+			return WrapperResponse.builder().statusMessage("Successfully Edit. Refresh your profile page").build();
 		}
-		body.setId(id);
-		User entitiesList = userRepo.findByEmail(body.getEmail());
-		if(entitiesList!=null)
-		{
-			return WrapperResponse.<User>builder().data(body).
-			statusCode("FAILED").
-			statusMessage("CONFIGURATION ALREADY EXISTS").build();
+		else{
+			return WrapperResponse.builder().statusMessage("No such user exists").httpStatus(HttpStatus.BAD_REQUEST).build();
 		}
-		userRepo.save(body);
-		return WrapperResponse.<User>builder().data(body).build();
 	}
 
 	public WrapperResponse<User> setAccommodation(Long id) {
