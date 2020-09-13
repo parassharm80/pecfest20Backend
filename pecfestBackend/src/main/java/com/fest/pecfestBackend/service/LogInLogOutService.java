@@ -14,7 +14,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
@@ -54,13 +53,7 @@ public class LogInLogOutService {
             return WrapperResponse.builder().httpStatus(HttpStatus.BAD_REQUEST).statusMessage("You have not been registered/verified yet").build();
         String randomOtpCode= UUID.randomUUID().toString()+user.getId();
         emailSenderService.sendEmail(createEmailMessage(randomOtpCode, emailId,user.getId()));
-        List<String> otpList=user.fetchOtpList();
-        if(Objects.isNull(otpList))
-            user.setOtpForPasswordReset(randomOtpCode);
-        else {
-            otpList.add(randomOtpCode);
-            user.setOtpForPasswordReset(String.join(",", otpList));
-        }
+        user.setOtpForPasswordReset(randomOtpCode);
         userRepo.save(user);
         return WrapperResponse.builder().build();
     }
@@ -70,7 +63,7 @@ public class LogInLogOutService {
         message.setTo(emailId);
         message.setFrom("registrations@pecfest.in");
         message.setSubject("Reset Password Instructions");
-        message.setText("Click here to reset password : "+domainHost+"/reset-password?verification_token="+verificationCode+"&id="+userId);
+        message.setText("Click here to reset password : "+domainHost+"/reset-password/"+userId+"/"+verificationCode);
         return message;
     }
 
@@ -81,7 +74,7 @@ public class LogInLogOutService {
         else{
             String newHashedPassword=Hashing.sha512().hashString(resetPasswordRequest.getPassword(), StandardCharsets.UTF_8).toString();
             user.setPassword(newHashedPassword);
-            user.setOtpForPasswordReset(null);
+            userRepo.save(user);
         }
 
         return WrapperResponse.builder().statusMessage("Password reset successful").build();
