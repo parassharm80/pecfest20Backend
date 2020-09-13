@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.fest.pecfestBackend.enums.Club;
 import com.fest.pecfestBackend.enums.EventCount;
 import com.fest.pecfestBackend.enums.EventType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
@@ -15,6 +17,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+@AllArgsConstructor
+@NoArgsConstructor
 public class EventRequest {
 
     @NotBlank
