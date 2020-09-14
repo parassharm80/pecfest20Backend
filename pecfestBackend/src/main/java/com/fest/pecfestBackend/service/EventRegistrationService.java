@@ -52,7 +52,7 @@ public class EventRegistrationService {
                     for(Team team:teams){
                         String duplicateRegistrations=team.getMemberPecFestIdList().parallelStream().filter(pecFestIds::contains).collect(Collectors.joining(", "));
                         if(StringUtils.isNotEmpty(duplicateRegistrations))
-                            return WrapperResponse.builder().statusMessage(duplicateRegistrations+" have already been registered").build();
+                            return WrapperResponse.builder().statusMessage(duplicateRegistrations+" have already been registered").httpStatus(HttpStatus.BAD_REQUEST).build();
                     }
                     teamRepo.save(Team.builder().eventId(eventId).leaderPecFestId(pecFestIds.get(0)).memberPecFestIdList(String.join(",", pecFestIds)).teamName(teamName)
                             .leaderId(userRepo.findByPecFestId(pecFestIds.get(0)).getId())
