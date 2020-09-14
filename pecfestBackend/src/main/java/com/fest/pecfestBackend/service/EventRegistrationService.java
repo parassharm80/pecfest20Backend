@@ -1,5 +1,6 @@
 package com.fest.pecfestBackend.service;
 
+import com.fest.pecfestBackend.entity.Event;
 import com.fest.pecfestBackend.entity.Team;
 import com.fest.pecfestBackend.entity.User;
 import com.fest.pecfestBackend.repository.EventRepo;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,7 +40,8 @@ public class EventRegistrationService {
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Please Log in first").build();
         }
         else{
-            if(!eventRepo.existsByEventID(eventId))
+            Optional<Event> eventOptional=eventRepo.findById(eventId);
+            if(!eventOptional.isPresent())
                 return WrapperResponse.builder().statusMessage("No such event exists").httpStatus(HttpStatus.BAD_REQUEST).build();
 
            String inValidPecFestIds=pecFestIds.parallelStream().filter(pecFestId->!userRepo.existsByPecFestIdAndIsVerified(pecFestId,true)).collect(Collectors.joining(", "));
@@ -55,7 +58,7 @@ public class EventRegistrationService {
                             return WrapperResponse.builder().statusMessage(duplicateRegistrations+" have already been registered with a different team").httpStatus(HttpStatus.BAD_REQUEST).build();
                     }
                     teamRepo.save(Team.builder().eventId(eventId).leaderPecFestId(pecFestIds.get(0)).memberPecFestIdList(String.join(",", pecFestIds)).teamName(teamName)
-                            .leaderId(userRepo.findByPecFestId(pecFestIds.get(0)).getId())
+                            .leaderId(userRepo.findByPecFestId(pecFestIds.get(0)).getId()).eventName(eventOptional.get().getEventName())
                             .build());
                     return WrapperResponse.builder().statusMessage("Event Registration is successful").build();
                 }
@@ -77,10 +80,11 @@ public class EventRegistrationService {
         else{
             if(teamRepo.existsByTeamNameAndEventId(user.getPecFestId(),eventId))
                 return WrapperResponse.builder().httpStatus(HttpStatus.BAD_REQUEST).statusMessage("You have already been registered").build();
-            if(!eventRepo.existsByEventID(eventId))
+            Optional<Event> eventOptional=eventRepo.findById(eventId);
+            if(!eventOptional.isPresent())
                 return WrapperResponse.builder().statusMessage("No such event exists").httpStatus(HttpStatus.BAD_REQUEST).build();
             teamRepo.save(Team.builder().eventId(eventId).leaderPecFestId(user.getPecFestId()).memberPecFestIdList(user.getPecFestId()).teamName(user.getPecFestId())
-                    .leaderId(user.getId())
+                    .leaderId(user.getId()).eventName(eventOptional.get().getEventName())
                     .build());
             return WrapperResponse.builder().statusMessage("Event Registration is successful").build();
         }
