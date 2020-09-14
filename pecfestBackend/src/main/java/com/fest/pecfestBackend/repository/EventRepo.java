@@ -11,5 +11,4 @@ public interface EventRepo extends JpaRepository<Event, Long> {
     List<Event> findByOrganizingClub(Club organizingClub);
     List<Event> findByEventType(EventType eventType);
     Event findByEventName(String eventName);
-    boolean existsByEventID(Long eventId);
 }
