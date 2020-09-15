@@ -23,8 +23,10 @@ public class EventService {
     private EventRepo eventRepo;
 
     @Cacheable("eventsByClubName")
-    public WrapperResponse getEventsByOrganizingClubName(Club organizingClubName) {
-        return WrapperResponse.builder().data(eventRepo.findByOrganizingClub(organizingClubName)).build();
+    public WrapperResponse getEventsByOrganizingClubName(String organizingClubName) {
+        if(Club.fromString(organizingClubName)==null)
+            return WrapperResponse.builder().statusCode(HttpStatus.BAD_REQUEST.toString()).httpStatus(HttpStatus.BAD_REQUEST).statusMessage("No such club name exists!").build();
+        return WrapperResponse.builder().data(eventRepo.findAllByOrganizingClub(Club.fromString(organizingClubName))).build();
     }
 
     public WrapperResponse addEvent(EventRequest addEventRequest) {
@@ -50,10 +52,10 @@ public class EventService {
 
     private Event getNewEvent(EventRequest addEventRequest) {
         return Event.builder().eventCount(addEventRequest.getEventCount()).eventDescription(addEventRequest.getEventDescription()).eventEndDateAndTime(addEventRequest.getEventEndDateAndTime())
-                .organizingClub(addEventRequest.getOrganizingClub()).organizerContactNo(addEventRequest.getOrganizerContactNo())
+                .organizingClub(Club.fromString(addEventRequest.getOrganizingClub())).organizerContactNo(addEventRequest.getOrganizerContactNo())
                 .minNumberOfParticipants(addEventRequest.getMinNumberOfParticipants()).maxNumberOfParticipants(addEventRequest.getMaxNumberOfParticipants()).eventStartDateAndTime(addEventRequest.getEventStartDateAndTime())
                 .eventType(addEventRequest.getEventType()).prizeMoneyWorth(addEventRequest.getPrizeMoneyWorth())
-                .venue(addEventRequest.getVenue()).eventName(addEventRequest.getEventName()).rules(addEventRequest.getRules())
+                .venue(addEventRequest.getVenue()).eventName(addEventRequest.getEventName()).rules(addEventRequest.getRules()).eventBannerImageUrl(addEventRequest.getEventBannerImageUrl())
                 .build();
     }
 
@@ -75,9 +77,15 @@ public class EventService {
 
             oldEvent.setEventDescription(Optional.ofNullable(editEventRequest.getEventDescription()).orElse(oldEvent.getEventDescription()));
             oldEvent.setEventEndDateAndTime(Optional.ofNullable(editEventRequest.getEventEndDateAndTime()).orElse(oldEvent.getEventEndDateAndTime()));
-            oldEvent.setEventEndDateAndTime(Optional.ofNullable(editEventRequest.getEventStartDateAndTime()).orElse(oldEvent.getEventStartDateAndTime()));
+            oldEvent.setEventStartDateAndTime(Optional.ofNullable(editEventRequest.getEventStartDateAndTime()).orElse(oldEvent.getEventStartDateAndTime()));
             oldEvent.setVenue(Optional.ofNullable(editEventRequest.getVenue()).orElse(oldEvent.getVenue()));
             oldEvent.setOrganizerContactNo(Optional.ofNullable(editEventRequest.getOrganizerContactNo()).orElse(oldEvent.getOrganizerContactNo()));
+            oldEvent.setOrganizingClub(Club.fromString(editEventRequest.getOrganizingClub()));
+            oldEvent.setEventName(Optional.ofNullable(editEventRequest.getEventName()).orElse(oldEvent.getEventName()));
+            oldEvent.setEventCount(editEventRequest.getEventCount());
+            oldEvent.setMaxNumberOfParticipants(editEventRequest.getMaxNumberOfParticipants());
+            oldEvent.setMinNumberOfParticipants(editEventRequest.getMinNumberOfParticipants());
+            oldEvent.setEventType(editEventRequest.getEventType());
             eventRepo.save(oldEvent);
             return WrapperResponse.builder().data(oldEvent).statusMessage("Edited successfully").build();
         }
@@ -99,16 +107,21 @@ public class EventService {
     }
 
     private List<EventListByClubNameResponse> getListByClubName(List<Event> eventList) {
-        Map<Club,List<Event>> map=new HashMap<>();
+        Map<String,List<Event>> map=new HashMap<>();
         List<EventListByClubNameResponse> eventListByClubName=new ArrayList<>();
         for(Event event:eventList) {
-            if (!map.containsKey(event.getOrganizingClub()))
-                map.put(event.getOrganizingClub(), new ArrayList<>());
-            map.get(event.getOrganizingClub()).add(event);
+            if (!map.containsKey(event.getOrganizingClub().getClubName()))
+                map.put(event.getOrganizingClub().getClubName(), new ArrayList<>());
+            map.get(event.getOrganizingClub().getClubName()).add(event);
         }
         map.forEach((key,value)->{
             eventListByClubName.add(EventListByClubNameResponse.builder().clubName(key).eventList(value).build());
         });
         return eventListByClubName;
+    }
+
+    public WrapperResponse getEventsForClubAdmins(String sessionId) {
+
+        return getEventsByOrganizingClubName(organizingClub);
     }
 }

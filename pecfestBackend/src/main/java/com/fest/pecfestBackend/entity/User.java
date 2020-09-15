@@ -1,10 +1,9 @@
 package com.fest.pecfestBackend.entity;
 
+import com.fest.pecfestBackend.enums.Club;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Arrays;
-import java.util.List;
 
 @Entity
 @Getter
@@ -42,7 +41,8 @@ public class User {
 	private Boolean requireAccommodation=false;
 	
 	@Column
-	private Long preference= (long) 0;
+	@Enumerated(EnumType.STRING)
+	private Club coordinatingClubName=null;
 	
 	@Column
 	private Long teamId;
@@ -59,8 +59,5 @@ public class User {
 	private String collegeName;
 	public String getName(){
 		return this.firstName+" "+this.lastName;
-	}
-	public List<String> fetchOtpList(){
-		return Arrays.asList(otpForPasswordReset.split(","));
 	}
 }

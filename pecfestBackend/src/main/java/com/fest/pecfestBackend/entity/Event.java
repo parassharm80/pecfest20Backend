@@ -24,7 +24,7 @@ public class Event {
     private Long eventID;
     @Column(nullable = false)
     private String eventName;
-
+    private String eventBannerImageUrl;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private EventType eventType;
@@ -33,6 +33,7 @@ public class Event {
     @Enumerated(EnumType.STRING)
     private EventCount eventCount;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Club organizingClub;
     private String organizerContactNo;
