@@ -1,6 +1,7 @@
 package com.fest.pecfestBackend.controller;
 
-import com.fest.pecfestBackend.request.EventRequest;
+import com.fest.pecfestBackend.request.AddEventRequest;
+import com.fest.pecfestBackend.request.EditEventRequest;
 import com.fest.pecfestBackend.response.WrapperResponse;
 import com.fest.pecfestBackend.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class EventController {
         return eventService.getEventsForClubAdmins(sessionId);
     }
     @PostMapping("/admin")
-    public WrapperResponse addEvent(@RequestBody EventRequest addEventRequest,@RequestHeader("session_id") String sessionId){
+    public WrapperResponse addEvent(@RequestBody AddEventRequest addEventRequest, @RequestHeader("session_id") String sessionId){
         return eventService.addEvent(addEventRequest,sessionId);
     }
     @DeleteMapping("/admin/{event_id}")
@@ -37,7 +38,7 @@ public class EventController {
         return eventService.deleteEvent(eventId,sessionId);
     }
     @PutMapping("/admin/{event_id}")
-    public WrapperResponse editEvent(@PathVariable("event_id") Long eventId,@RequestBody EventRequest editEventRequest,
+    public WrapperResponse editEvent(@PathVariable("event_id") Long eventId,@RequestBody EditEventRequest editEventRequest,
                                      @RequestHeader("session_id") String sessionId){
         return eventService.editEvent(eventId,editEventRequest,sessionId);
     }

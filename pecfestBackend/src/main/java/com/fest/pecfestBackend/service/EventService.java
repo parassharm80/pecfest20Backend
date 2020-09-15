@@ -5,7 +5,8 @@ import com.fest.pecfestBackend.entity.User;
 import com.fest.pecfestBackend.enums.Club;
 import com.fest.pecfestBackend.enums.EventType;
 import com.fest.pecfestBackend.repository.EventRepo;
-import com.fest.pecfestBackend.request.EventRequest;
+import com.fest.pecfestBackend.request.AddEventRequest;
+import com.fest.pecfestBackend.request.EditEventRequest;
 import com.fest.pecfestBackend.response.EventListByClubNameResponse;
 import com.fest.pecfestBackend.response.EventListResponse;
 import com.fest.pecfestBackend.response.TechnoCultEventResponse;
@@ -33,7 +34,7 @@ public class EventService {
         return WrapperResponse.builder().data(eventRepo.findAllByOrganizingClub(Club.fromString(organizingClubName))).build();
     }
 
-    public WrapperResponse addEvent(EventRequest addEventRequest,String sessionId) {
+    public WrapperResponse addEvent(AddEventRequest addEventRequest, String sessionId) {
         User user=sessionService.verifySessionId(sessionId);
         if(!Optional.ofNullable(user).isPresent()||Objects.isNull(user.getCoordinatingClubName())||user.getCoordinatingClubName().equals(Club.EMPTY))
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized").build();
@@ -61,7 +62,7 @@ public class EventService {
                 workshop(workshopEventList).lecture(lectureEventList).build()).build();
     }
 
-    private Event getNewEvent(EventRequest addEventRequest,String name) {
+    private Event getNewEvent(AddEventRequest addEventRequest, String name) {
         return Event.builder().eventCount(addEventRequest.getEventCount()).eventDescription(addEventRequest.getEventDescription()).eventEndDateAndTime(addEventRequest.getEventEndDateAndTime())
                 .organizingClub(Club.fromString(addEventRequest.getOrganizingClub())).organizerContactNo(addEventRequest.getOrganizerContactNo())
                 .minNumberOfParticipants(addEventRequest.getMinNumberOfParticipants()).maxNumberOfParticipants(addEventRequest.getMaxNumberOfParticipants()).eventStartDateAndTime(addEventRequest.getEventStartDateAndTime())
@@ -88,24 +89,25 @@ public class EventService {
         }
     }
 
-    public WrapperResponse editEvent(Long eventId, EventRequest editEventRequest,String sessionId) {
+    public WrapperResponse editEvent(Long eventId, EditEventRequest editEventRequest, String sessionId) {
         User user=sessionService.verifySessionId(sessionId);
         if(!Optional.ofNullable(user).isPresent()||Objects.isNull(user.getCoordinatingClubName())||user.getCoordinatingClubName().equals(Club.EMPTY))
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized").build();
 
-        if(!user.getCoordinatingClubName().equals(Club.ALL)&&!user.getCoordinatingClubName().equals(Club.fromString(editEventRequest.getOrganizingClub())))
+        if(!user.getCoordinatingClubName().equals(Club.ALL)&&!user.getCoordinatingClubName().equals(editEventRequest.getOrganizingClub()))
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized to modify "+editEventRequest.getOrganizingClub()+" club").build();
 
         Optional<Event> oldEventOptional=eventRepo.findById(eventId);
         if(oldEventOptional.isPresent()){
             Event oldEvent=oldEventOptional.get();
-
+                if(!CollectionUtils.isEmpty(eventRepo.findAllByEventNameAndOrganizingClub(editEventRequest.getEventName(),editEventRequest.getOrganizingClub())))
+                    return WrapperResponse.builder().statusCode(HttpStatus.BAD_REQUEST.toString()).httpStatus(HttpStatus.BAD_REQUEST).statusMessage("The event name already exists!").build();
             oldEvent.setEventDescription(Optional.ofNullable(editEventRequest.getEventDescription()).orElse(oldEvent.getEventDescription()));
             oldEvent.setEventEndDateAndTime(Optional.ofNullable(editEventRequest.getEventEndDateAndTime()).orElse(oldEvent.getEventEndDateAndTime()));
             oldEvent.setEventStartDateAndTime(Optional.ofNullable(editEventRequest.getEventStartDateAndTime()).orElse(oldEvent.getEventStartDateAndTime()));
             oldEvent.setVenue(Optional.ofNullable(editEventRequest.getVenue()).orElse(oldEvent.getVenue()));
             oldEvent.setOrganizerContactNo(Optional.ofNullable(editEventRequest.getOrganizerContactNo()).orElse(oldEvent.getOrganizerContactNo()));
-            oldEvent.setOrganizingClub(Club.fromString(editEventRequest.getOrganizingClub()));
+            oldEvent.setOrganizingClub(editEventRequest.getOrganizingClub());
             oldEvent.setEventName(Optional.ofNullable(editEventRequest.getEventName()).orElse(oldEvent.getEventName()));
             oldEvent.setEventCount(editEventRequest.getEventCount());
             oldEvent.setMaxNumberOfParticipants(editEventRequest.getMaxNumberOfParticipants());

@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventRequest {
+public class AddEventRequest {
     private String eventName;
     private String eventBannerImageUrl;
     private EventType eventType;
