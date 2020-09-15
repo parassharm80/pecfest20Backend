@@ -30,7 +30,8 @@ public enum Club {
     ACM_CSS("Computer Science Society"),
     IETE("Institution of Electronics and Telecommunication Engineers"),
     SPORTS("SPORTS"),
-    ALL("ALL");
+    ALL("ALL"),
+    EMPTY("EMPTY");
     private final String clubName;
 
     Club(String name) {

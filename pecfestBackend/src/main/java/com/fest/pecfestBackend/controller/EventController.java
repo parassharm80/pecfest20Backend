@@ -24,7 +24,7 @@ public class EventController {
         return eventService.getAllEvents();
     }
 
-    @GetMapping("/club-admin")
+    @GetMapping("/admin")
     public WrapperResponse getEventsForClubAdmins(@RequestHeader("session_id") String sessionId){
         return eventService.getEventsForClubAdmins(sessionId);
     }

@@ -125,7 +125,7 @@ public class EventService {
 
     public WrapperResponse getEventsForClubAdmins(String sessionId) {
         User user=sessionService.verifySessionId(sessionId);
-        if(!Optional.ofNullable(user).isPresent()||Objects.isNull(user.getCoordinatingClubName()))
+        if(!Optional.ofNullable(user).isPresent()||user.getCoordinatingClubName().equals(Club.EMPTY))
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized").build();
         else{
             if(user.getCoordinatingClubName().equals(Club.ALL))// SuperAdmin

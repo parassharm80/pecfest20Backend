@@ -42,11 +42,8 @@ public class User {
 	
 	@Column
 	@Enumerated(EnumType.STRING)
-	private Club coordinatingClubName=null;
-	
-	@Column
-	private Long teamId;
-	
+	private Club coordinatingClubName=Club.EMPTY;
+
 	@Column
 	private boolean isVerified; //to check whether the user is verified or not
 	@Column
