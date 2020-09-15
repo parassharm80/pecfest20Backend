@@ -24,6 +24,7 @@ public class Event {
     private Long eventID;
     @Column(nullable = false)
     private String eventName;
+    private String eventBannerImageUrl;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -51,4 +52,6 @@ public class Event {
     private String prizeMoneyWorth;
     private String venue;
     private String rules;
+    private String createdBy;
+    private String updatedBy;
 }
