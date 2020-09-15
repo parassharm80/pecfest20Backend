@@ -1,6 +1,7 @@
 package com.fest.pecfestBackend.service;
 
 import com.fest.pecfestBackend.entity.Event;
+import com.fest.pecfestBackend.entity.User;
 import com.fest.pecfestBackend.enums.Club;
 import com.fest.pecfestBackend.enums.EventType;
 import com.fest.pecfestBackend.repository.EventRepo;
@@ -21,6 +22,8 @@ import java.util.stream.Collectors;
 public class EventService {
     @Autowired
     private EventRepo eventRepo;
+    @Autowired
+    private SessionService sessionService;
 
     @Cacheable("eventsByClubName")
     public WrapperResponse getEventsByOrganizingClubName(String organizingClubName) {
@@ -121,7 +124,7 @@ public class EventService {
     }
 
     public WrapperResponse getEventsForClubAdmins(String sessionId) {
-
+        User user=sessionService.verifySessionId(sessionId);
         return getEventsByOrganizingClubName(organizingClub);
     }
 }
