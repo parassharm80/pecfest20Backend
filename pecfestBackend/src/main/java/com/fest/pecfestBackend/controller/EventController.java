@@ -14,7 +14,7 @@ public class EventController {
     @Autowired
     private EventService eventService;
 
-    @GetMapping("/club-wise")
+    @GetMapping("/club-wise") // api for events page
     public WrapperResponse getAllEventsByClub(){
         return eventService.getAllEventsByClub();
     }
@@ -24,13 +24,13 @@ public class EventController {
         return eventService.getAllEvents();
     }
 
-    @GetMapping("/admin")
+    @GetMapping("/admin") //api for admin page
     public WrapperResponse getEventsForClubAdmins(@RequestHeader("session_id") String sessionId){
         return eventService.getEventsForClubAdmins(sessionId);
     }
     @PostMapping
-    public WrapperResponse addEvent(@RequestBody EventRequest addEventRequest){
-        return eventService.addEvent(addEventRequest);
+    public WrapperResponse addEvent(@RequestBody EventRequest addEventRequest,@RequestHeader("session_id") String sessionId){
+        return eventService.addEvent(addEventRequest,sessionId);
     }
     @DeleteMapping("/{event_id}")
     public WrapperResponse deleteEvent(@PathVariable("event_id") Long eventId){

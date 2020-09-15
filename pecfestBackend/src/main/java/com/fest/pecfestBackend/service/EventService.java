@@ -10,6 +10,7 @@ import com.fest.pecfestBackend.response.EventListByClubNameResponse;
 import com.fest.pecfestBackend.response.EventListResponse;
 import com.fest.pecfestBackend.response.TechnoCultEventResponse;
 import com.fest.pecfestBackend.response.WrapperResponse;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
@@ -32,10 +33,17 @@ public class EventService {
         return WrapperResponse.builder().data(eventRepo.findAllByOrganizingClub(Club.fromString(organizingClubName))).build();
     }
 
-    public WrapperResponse addEvent(EventRequest addEventRequest) {
-        Event event = eventRepo.findByEventName(addEventRequest.getEventName());
-        if (Objects.isNull(event)) {
-            Event newEvent = getNewEvent(addEventRequest);
+    public WrapperResponse addEvent(EventRequest addEventRequest,String sessionId) {
+        User user=sessionService.verifySessionId(sessionId);
+        if(!Optional.ofNullable(user).isPresent()||Objects.isNull(user.getCoordinatingClubName())||user.getCoordinatingClubName().equals(Club.EMPTY))
+            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized").build();
+
+        if(!user.getCoordinatingClubName().equals(Club.ALL)&&!user.getCoordinatingClubName().equals(Club.fromString(addEventRequest.getOrganizingClub())))
+            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized").build();
+
+        List<Event> eventList = eventRepo.findAllByEventNameAndOrganizingClub(addEventRequest.getEventName(),Club.fromString(addEventRequest.getOrganizingClub()));
+        if (CollectionUtils.isEmpty(eventList)) {
+            Event newEvent = getNewEvent(addEventRequest,user.getName());
             eventRepo.save(newEvent);
             return WrapperResponse.builder().data(newEvent).statusMessage("Event added successfully").build();
         } else {
@@ -53,12 +61,12 @@ public class EventService {
                 workshop(workshopEventList).lecture(lectureEventList).build()).build();
     }
 
-    private Event getNewEvent(EventRequest addEventRequest) {
+    private Event getNewEvent(EventRequest addEventRequest,String name) {
         return Event.builder().eventCount(addEventRequest.getEventCount()).eventDescription(addEventRequest.getEventDescription()).eventEndDateAndTime(addEventRequest.getEventEndDateAndTime())
                 .organizingClub(Club.fromString(addEventRequest.getOrganizingClub())).organizerContactNo(addEventRequest.getOrganizerContactNo())
                 .minNumberOfParticipants(addEventRequest.getMinNumberOfParticipants()).maxNumberOfParticipants(addEventRequest.getMaxNumberOfParticipants()).eventStartDateAndTime(addEventRequest.getEventStartDateAndTime())
                 .eventType(addEventRequest.getEventType()).prizeMoneyWorth(addEventRequest.getPrizeMoneyWorth())
-                .venue(addEventRequest.getVenue()).eventName(addEventRequest.getEventName()).rules(addEventRequest.getRules()).eventBannerImageUrl(addEventRequest.getEventBannerImageUrl())
+                .venue(addEventRequest.getVenue()).eventName(addEventRequest.getEventName()).rules(addEventRequest.getRules()).eventBannerImageUrl(addEventRequest.getEventBannerImageUrl()).createdBy(name).updatedBy(name)
                 .build();
     }
 

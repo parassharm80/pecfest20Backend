@@ -52,4 +52,6 @@ public class Event {
     private String prizeMoneyWorth;
     private String venue;
     private String rules;
+    private String createdBy;
+    private String updatedBy;
 }
