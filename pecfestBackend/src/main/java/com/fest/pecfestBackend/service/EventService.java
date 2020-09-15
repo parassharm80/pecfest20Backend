@@ -5,8 +5,7 @@ import com.fest.pecfestBackend.entity.User;
 import com.fest.pecfestBackend.enums.Club;
 import com.fest.pecfestBackend.enums.EventType;
 import com.fest.pecfestBackend.repository.EventRepo;
-import com.fest.pecfestBackend.request.AddEventRequest;
-import com.fest.pecfestBackend.request.EditEventRequest;
+import com.fest.pecfestBackend.request.EventRequest;
 import com.fest.pecfestBackend.response.EventListByClubNameResponse;
 import com.fest.pecfestBackend.response.EventListResponse;
 import com.fest.pecfestBackend.response.TechnoCultEventResponse;
@@ -34,15 +33,15 @@ public class EventService {
         return WrapperResponse.builder().data(eventRepo.findAllByOrganizingClub(Club.fromString(organizingClubName))).build();
     }
 
-    public WrapperResponse addEvent(AddEventRequest addEventRequest, String sessionId) {
+    public WrapperResponse addEvent(EventRequest addEventRequest, String sessionId) {
         User user=sessionService.verifySessionId(sessionId);
         if(!Optional.ofNullable(user).isPresent()||Objects.isNull(user.getCoordinatingClubName())||user.getCoordinatingClubName().equals(Club.EMPTY))
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized").build();
 
-        if(!user.getCoordinatingClubName().equals(Club.ALL)&&!user.getCoordinatingClubName().equals(Club.fromString(addEventRequest.getOrganizingClub())))
-            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized to modify "+addEventRequest.getOrganizingClub()+" club").build();
+        if(!user.getCoordinatingClubName().equals(Club.ALL)&&!user.getCoordinatingClubName().equals(addEventRequest.getOrganizingClub()))
+            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized to modify "+addEventRequest.getOrganizingClub()+" club's events").build();
 
-        List<Event> eventList = eventRepo.findAllByEventNameAndOrganizingClub(addEventRequest.getEventName(),Club.fromString(addEventRequest.getOrganizingClub()));
+        List<Event> eventList = eventRepo.findAllByEventNameAndOrganizingClub(addEventRequest.getEventName(),addEventRequest.getOrganizingClub());
         if (CollectionUtils.isEmpty(eventList)) {
             Event newEvent = getNewEvent(addEventRequest,user.getName());
             eventRepo.save(newEvent);
@@ -62,9 +61,9 @@ public class EventService {
                 workshop(workshopEventList).lecture(lectureEventList).build()).build();
     }
 
-    private Event getNewEvent(AddEventRequest addEventRequest, String name) {
+    private Event getNewEvent(EventRequest addEventRequest, String name) {
         return Event.builder().eventCount(addEventRequest.getEventCount()).eventDescription(addEventRequest.getEventDescription()).eventEndDateAndTime(addEventRequest.getEventEndDateAndTime())
-                .organizingClub(Club.fromString(addEventRequest.getOrganizingClub())).organizerContactNo(addEventRequest.getOrganizerContactNo())
+                .organizingClub(addEventRequest.getOrganizingClub()).organizerContactNo(addEventRequest.getOrganizerContactNo())
                 .minNumberOfParticipants(addEventRequest.getMinNumberOfParticipants()).maxNumberOfParticipants(addEventRequest.getMaxNumberOfParticipants()).eventStartDateAndTime(addEventRequest.getEventStartDateAndTime())
                 .eventType(addEventRequest.getEventType()).prizeMoneyWorth(addEventRequest.getPrizeMoneyWorth())
                 .venue(addEventRequest.getVenue()).eventName(addEventRequest.getEventName()).rules(addEventRequest.getRules()).eventBannerImageUrl(addEventRequest.getEventBannerImageUrl()).createdBy(name).updatedBy(name)
@@ -89,7 +88,7 @@ public class EventService {
         }
     }
 
-    public WrapperResponse editEvent(Long eventId, EditEventRequest editEventRequest, String sessionId) {
+    public WrapperResponse editEvent(Long eventId, EventRequest editEventRequest, String sessionId) {
         User user=sessionService.verifySessionId(sessionId);
         if(!Optional.ofNullable(user).isPresent()||Objects.isNull(user.getCoordinatingClubName())||user.getCoordinatingClubName().equals(Club.EMPTY))
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized").build();

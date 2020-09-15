@@ -2,6 +2,7 @@ package com.fest.pecfestBackend.request;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fest.pecfestBackend.enums.Club;
 import com.fest.pecfestBackend.enums.EventCount;
 import com.fest.pecfestBackend.enums.EventType;
 import lombok.AllArgsConstructor;
@@ -16,13 +17,13 @@ import java.time.LocalDateTime;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddEventRequest {
+public class EventRequest {
     private String eventName;
     private String eventBannerImageUrl;
     private EventType eventType;
 
     private EventCount eventCount;
-    private String organizingClub;
+    private Club organizingClub;
     private String organizerContactNo;
 
     private Integer minNumberOfParticipants;
