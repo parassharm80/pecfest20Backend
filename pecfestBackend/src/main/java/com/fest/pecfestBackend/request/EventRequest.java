@@ -2,6 +2,7 @@ package com.fest.pecfestBackend.request;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fest.pecfestBackend.enums.Club;
 import com.fest.pecfestBackend.enums.EventCount;
 import com.fest.pecfestBackend.enums.EventType;
 import lombok.AllArgsConstructor;
@@ -22,7 +23,7 @@ public class EventRequest {
     private EventType eventType;
 
     private EventCount eventCount;
-    private String organizingClub;
+    private Club organizingClub;
     private String organizerContactNo;
 
     private Integer minNumberOfParticipants;

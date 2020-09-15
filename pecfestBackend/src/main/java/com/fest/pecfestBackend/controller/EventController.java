@@ -29,7 +29,7 @@ public class EventController {
         return eventService.getEventsForClubAdmins(sessionId);
     }
     @PostMapping("/admin")
-    public WrapperResponse addEvent(@RequestBody EventRequest addEventRequest,@RequestHeader("session_id") String sessionId){
+    public WrapperResponse addEvent(@RequestBody EventRequest addEventRequest, @RequestHeader("session_id") String sessionId){
         return eventService.addEvent(addEventRequest,sessionId);
     }
     @DeleteMapping("/admin/{event_id}")
