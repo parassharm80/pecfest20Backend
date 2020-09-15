@@ -28,15 +28,15 @@ public class EventController {
     public WrapperResponse getEventsForClubAdmins(@RequestHeader("session_id") String sessionId){
         return eventService.getEventsForClubAdmins(sessionId);
     }
-    @PostMapping
+    @PostMapping("/admin")
     public WrapperResponse addEvent(@RequestBody EventRequest addEventRequest,@RequestHeader("session_id") String sessionId){
         return eventService.addEvent(addEventRequest,sessionId);
     }
-    @DeleteMapping("/{event_id}")
-    public WrapperResponse deleteEvent(@PathVariable("event_id") Long eventId){
-        return eventService.deleteEvent(eventId);
+    @DeleteMapping("/admin/{event_id}")
+    public WrapperResponse deleteEvent(@PathVariable("event_id") Long eventId,@RequestHeader("session_id") String sessionId){
+        return eventService.deleteEvent(eventId,sessionId);
     }
-    @PutMapping("/{event_id}")
+    @PutMapping("/admin/{event_id}")
     public WrapperResponse editEvent(@PathVariable("event_id") Long eventId,@RequestBody EventRequest editEventRequest,
                                      @RequestHeader("session_id") String sessionId){
         return eventService.editEvent(eventId,editEventRequest,sessionId);

@@ -70,9 +70,16 @@ public class EventService {
                 .build();
     }
 
-    public WrapperResponse deleteEvent(Long eventId) {
+    public WrapperResponse deleteEvent(Long eventId,String sessionId) {
         Optional<Event> event=eventRepo.findById(eventId);
         if(event.isPresent()) {
+            User user=sessionService.verifySessionId(sessionId);
+            if(!Optional.ofNullable(user).isPresent()||Objects.isNull(user.getCoordinatingClubName())||user.getCoordinatingClubName().equals(Club.EMPTY))
+                return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized").build();
+
+            if(!user.getCoordinatingClubName().equals(Club.ALL)&&!user.getCoordinatingClubName().equals(event.get().getOrganizingClub()))
+                return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized to modify "+event.get().getOrganizingClub()+" club").build();
+
             eventRepo.deleteById(eventId);
             return WrapperResponse.builder().data(event.get()).statusMessage("Event deleted successfully").build();
         }
