@@ -126,7 +126,7 @@ public class EventService {
     public WrapperResponse getEventsForClubAdmins(String sessionId) {
         User user=sessionService.verifySessionId(sessionId);
         if(!Optional.ofNullable(user).isPresent()||Objects.isNull(user.getCoordinatingClubName()))
-            return WrapperResponse.builder().statusMessage("Not authorized").build();
+            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized").build();
 
     }
 }
