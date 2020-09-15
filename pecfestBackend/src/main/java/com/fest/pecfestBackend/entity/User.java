@@ -37,12 +37,12 @@ public class User {
 	@Column(nullable = false)
 	private Long yearOfEducation;
 
-	@Column(name="require_accommodation",columnDefinition = "boolean default false")
+	@Column(name="require_accommodation")
 	private Boolean requireAccommodation=false;
 	
-	@Column(columnDefinition = "String default EMPTY")
+	@Column
 	@Enumerated(EnumType.STRING)
-	private Club coordinatingClubName;
+	private Club coordinatingClubName=null;
 
 	@Column
 	private boolean isVerified; //to check whether the user is verified or not

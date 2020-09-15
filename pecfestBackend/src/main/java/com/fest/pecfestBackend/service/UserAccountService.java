@@ -44,7 +44,7 @@ public class UserAccountService {
 			User newUser=User.builder().email(userSignUpRequest.getEmail()).firstName(userSignUpRequest.getFirstName()).lastName(userSignUpRequest.getLastName())
 					.gender(userSignUpRequest.getGender()).isVerified(false).otpForPasswordReset(null)
 					.password(hashedPassword).sessionId(StringUtils.EMPTY).yearOfEducation(userSignUpRequest.getYearOfEducation())
-					.contactNo(userSignUpRequest.getContactNo()).collegeName(userSignUpRequest.getCollegeName()).build();
+					.contactNo(userSignUpRequest.getContactNo()).collegeName(userSignUpRequest.getCollegeName()).requireAccommodation(false).build();
 			userRepo.save(newUser);
 			newUser.setPecFestId("PECFEST"+ newUser.getFirstName().charAt(0)+newUser.getLastName().charAt(0)+newUser.getId().toString());
 			userRepo.save(newUser);
