@@ -127,6 +127,11 @@ public class EventService {
         User user=sessionService.verifySessionId(sessionId);
         if(!Optional.ofNullable(user).isPresent()||Objects.isNull(user.getCoordinatingClubName()))
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized").build();
-
+        else{
+            if(user.getCoordinatingClubName().equals(Club.ALL))
+                return WrapperResponse.builder().data(eventRepo.findAll()).build();
+            else
+                return WrapperResponse.builder().data(eventRepo.findAllByOrganizingClub(user.getCoordinatingClubName())).build();
+        }
     }
 }
