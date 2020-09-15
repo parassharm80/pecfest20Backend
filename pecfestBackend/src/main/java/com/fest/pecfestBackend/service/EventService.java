@@ -39,7 +39,7 @@ public class EventService {
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized").build();
 
         if(!user.getCoordinatingClubName().equals(Club.ALL)&&!user.getCoordinatingClubName().equals(Club.fromString(addEventRequest.getOrganizingClub())))
-            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized").build();
+            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized to modify "+addEventRequest.getOrganizingClub()+" club").build();
 
         List<Event> eventList = eventRepo.findAllByEventNameAndOrganizingClub(addEventRequest.getEventName(),Club.fromString(addEventRequest.getOrganizingClub()));
         if (CollectionUtils.isEmpty(eventList)) {
@@ -81,7 +81,14 @@ public class EventService {
         }
     }
 
-    public WrapperResponse editEvent(Long eventId, EventRequest editEventRequest) {
+    public WrapperResponse editEvent(Long eventId, EventRequest editEventRequest,String sessionId) {
+        User user=sessionService.verifySessionId(sessionId);
+        if(!Optional.ofNullable(user).isPresent()||Objects.isNull(user.getCoordinatingClubName())||user.getCoordinatingClubName().equals(Club.EMPTY))
+            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized").build();
+
+        if(!user.getCoordinatingClubName().equals(Club.ALL)&&!user.getCoordinatingClubName().equals(Club.fromString(editEventRequest.getOrganizingClub())))
+            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized to modify "+editEventRequest.getOrganizingClub()+" club").build();
+
         Optional<Event> oldEventOptional=eventRepo.findById(eventId);
         if(oldEventOptional.isPresent()){
             Event oldEvent=oldEventOptional.get();
@@ -97,6 +104,7 @@ public class EventService {
             oldEvent.setMaxNumberOfParticipants(editEventRequest.getMaxNumberOfParticipants());
             oldEvent.setMinNumberOfParticipants(editEventRequest.getMinNumberOfParticipants());
             oldEvent.setEventType(editEventRequest.getEventType());
+            oldEvent.setRules(editEventRequest.getRules());
             eventRepo.save(oldEvent);
             return WrapperResponse.builder().data(oldEvent).statusMessage("Edited successfully").build();
         }

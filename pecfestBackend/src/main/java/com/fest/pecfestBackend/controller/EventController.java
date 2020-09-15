@@ -37,8 +37,9 @@ public class EventController {
         return eventService.deleteEvent(eventId);
     }
     @PutMapping("/{event_id}")
-    public WrapperResponse editEvent(@PathVariable("event_id") Long eventId,@RequestBody EventRequest editEventRequest){
-        return eventService.editEvent(eventId,editEventRequest);
+    public WrapperResponse editEvent(@PathVariable("event_id") Long eventId,@RequestBody EventRequest editEventRequest,
+                                     @RequestHeader("session_id") String sessionId){
+        return eventService.editEvent(eventId,editEventRequest,sessionId);
     }
 
     @GetMapping
