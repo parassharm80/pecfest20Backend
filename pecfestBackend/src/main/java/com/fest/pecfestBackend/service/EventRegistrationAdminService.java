@@ -6,14 +6,15 @@ import com.fest.pecfestBackend.entity.User;
 import com.fest.pecfestBackend.enums.Club;
 import com.fest.pecfestBackend.repository.EventRepo;
 import com.fest.pecfestBackend.repository.TeamRepo;
+import com.fest.pecfestBackend.response.EventsRegsDataResponse;
 import com.fest.pecfestBackend.response.WrapperResponse;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -53,17 +54,27 @@ public class EventRegistrationAdminService {
         if(!Optional.ofNullable(user).isPresent()|| Objects.isNull(user.getCoordinatingClubName())||user.getCoordinatingClubName().equals(Club.EMPTY))
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized").build();
         Club coordinatingClub=user.getCoordinatingClubName();
-        if(coordinatingClub.equals(Club.ALL)){
+        List<Event> eventList;
+        if(coordinatingClub.equals(Club.ALL))
+            eventList= eventRepo.findAllByEventName(eventName);
+        else
+            eventList= eventRepo.findAllByEventNameAndOrganizingClub(eventName,coordinatingClub);
 
-        }
-        else{
-            return WrapperResponse.builder().data(getEventsRegsForAClub(eventName,coordinatingClub)).build();
-        }
+        if(CollectionUtils.isNotEmpty(eventList))
+            return WrapperResponse.builder().data(getEventsRegs(eventList)).build();
+        else
+            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("No such event name exists. Check for spelling mistakes").build();
+    }
 
-        }
+    private List<EventsRegsDataResponse> getEventsRegs(List<Event> eventList) {
+        List<EventsRegsDataResponse> regsDataResponses=new ArrayList<>();
+        List<Team> teams=teamRepo.findAllByEventId(eventList.parallelStream().map(Event::getEventID).collect(Collectors.toList()));
+        for(Event event:eventList)
+        for(Team team:teams)
+            regsDataResponses.add(EventsRegsDataResponse.builder().eventName(event.getEventName()).teamName(team.getTeamName())
+            .leaderPecFestId(team.getLeaderPecFestId()).organizingClub(event.getOrganizingClub()).teamId(team.getTeamId()).memberPecFestIdList(StringUtils.join(team.getMemberPecFestIdList(), ',')).build());
 
-    private Object getEventsRegsForAClub(String eventName, Club coordinatingClub) {
-
+        return regsDataResponses;
     }
 }
-}
+
