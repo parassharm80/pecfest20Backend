@@ -35,6 +35,7 @@ public class Event {
     private EventCount eventCount;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Club organizingClub;
     private String organizerContactNo;
 

@@ -29,8 +29,6 @@ public class EventRegistrationService {
     private EventRepo eventRepo;
 
     public WrapperResponse registerTeamForAnEvent(Long eventId, List<String> pecFestIds, String teamName, String sessionId) {
-        if(Objects.isNull(sessionId)||sessionId.length()<2)
-        return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Please Log in first").build();
         if(Objects.isNull(pecFestIds)||pecFestIds.size()<1)
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Empty PECFEST Usernames' list").build();
         if(pecFestIds.parallelStream().distinct().count() <pecFestIds.size())
@@ -70,8 +68,6 @@ public class EventRegistrationService {
     }
 
     public WrapperResponse registerAnIndividual(Long eventId, String sessionId) {
-        if(Objects.isNull(sessionId)||sessionId.length()<2)
-            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Please Log in first").build();
         User user=sessionService.verifySessionId(sessionId);
         if(Objects.isNull(user)) {
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Please Log in first").build();

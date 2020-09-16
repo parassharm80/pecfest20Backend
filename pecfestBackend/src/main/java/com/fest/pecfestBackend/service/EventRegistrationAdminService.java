@@ -28,6 +28,11 @@ public class EventRegistrationAdminService {
         Optional<Event> eventOptional=eventRepo.findById(eventId);
         if(eventOptional.isPresent()){
             Event event=eventOptional.get();
+            if(event.getOrganizingClub().equals(Club.ALL)||event.getOrganizingClub().equals(user.getCoordinatingClubName())){
+
+            }
+            else
+                return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized to modify "+event.getOrganizingClub()+" club's registrations").build();
         }
         else
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("No such event exists").build();
