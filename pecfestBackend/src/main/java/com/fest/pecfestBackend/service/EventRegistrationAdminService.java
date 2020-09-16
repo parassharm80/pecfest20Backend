@@ -77,5 +77,17 @@ public class EventRegistrationAdminService {
         });
         return regsDataResponses;
     }
+
+    public WrapperResponse deleteTeam(String sessionId, Long teamId) {
+        User user=sessionService.verifySessionId(sessionId);
+        if(!Optional.ofNullable(user).isPresent()|| Objects.isNull(user.getCoordinatingClubName())||user.getCoordinatingClubName().equals(Club.EMPTY))
+            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized").build();
+        Optional<Team> teamOptional=teamRepo.findById(teamId);
+        if(!teamOptional.isPresent())
+            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("No such team exists").build();
+        else
+            teamRepo.deleteById(teamId);
+        return WrapperResponse.builder().statusMessage("Deleted successfully. Refresh your page.").build();
+    }
 }
 

@@ -24,4 +24,9 @@ public class EventRegistrationAdminController {
     public WrapperResponse getEventsRegistrationsData(@RequestHeader("session_id") String sessionId,@PathVariable("event_name") String eventName) {
         return eventRegAdminService.getEventsRegistrationsData(sessionId,eventName);
     }
+    @DeleteMapping("/{team_id}")
+    public WrapperResponse deleteTeam(@RequestHeader("session_id") String sessionId,@PathVariable("team_id") Long teamId){
+        return eventRegAdminService.deleteTeam(sessionId,teamId);
+    }
+    @PutMapping("/{team_id}")
 }
