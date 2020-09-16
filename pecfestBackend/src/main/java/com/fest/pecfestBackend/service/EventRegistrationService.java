@@ -58,8 +58,7 @@ public class EventRegistrationService {
                             return WrapperResponse.builder().statusMessage(duplicateRegistrations+" have already been registered with a different team").httpStatus(HttpStatus.BAD_REQUEST).build();
                     }
                     teamRepo.save(Team.builder().eventId(eventId).leaderPecFestId(pecFestIds.get(0)).memberPecFestIdList(String.join(",", pecFestIds)).teamName(teamName)
-                            .leaderId(userRepo.findByPecFestId(pecFestIds.get(0)).getId()).eventName(eventOptional.get().getEventName())
-                            .build());
+                            .leaderId(userRepo.findByPecFestId(pecFestIds.get(0)).getId()).build());
                     return WrapperResponse.builder().statusMessage("Event Registration is successful").build();
                 }
            }
@@ -84,8 +83,7 @@ public class EventRegistrationService {
             if(!eventOptional.isPresent())
                 return WrapperResponse.builder().statusMessage("No such event exists").httpStatus(HttpStatus.BAD_REQUEST).build();
             teamRepo.save(Team.builder().eventId(eventId).leaderPecFestId(user.getPecFestId()).memberPecFestIdList(user.getPecFestId()).teamName(user.getPecFestId())
-                    .leaderId(user.getId()).eventName(eventOptional.get().getEventName())
-                    .build());
+                    .leaderId(user.getId()).build());
             return WrapperResponse.builder().statusMessage("Event Registration is successful").build();
         }
     }
