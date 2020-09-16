@@ -78,7 +78,7 @@ public class EventService {
                 return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized").build();
 
             if(!user.getCoordinatingClubName().equals(Club.ALL)&&!user.getCoordinatingClubName().equals(event.get().getOrganizingClub()))
-                return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized to modify "+event.get().getOrganizingClub()+" club").build();
+                return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized to modify "+event.get().getOrganizingClub()+" club's events").build();
 
             eventRepo.deleteById(eventId);
             return WrapperResponse.builder().data(event.get()).statusMessage("Event deleted successfully").build();
@@ -94,7 +94,7 @@ public class EventService {
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized").build();
 
         if(!user.getCoordinatingClubName().equals(Club.ALL)&&!user.getCoordinatingClubName().equals(editEventRequest.getOrganizingClub()))
-            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized to modify "+editEventRequest.getOrganizingClub()+" club").build();
+            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized to modify "+editEventRequest.getOrganizingClub()+" club's events").build();
 
         Optional<Event> oldEventOptional=eventRepo.findById(eventId);
         if(oldEventOptional.isPresent()){
