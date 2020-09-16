@@ -48,16 +48,22 @@ public class EventRegistrationAdminService {
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("No such event exists").build();
     }
 
-    public WrapperResponse getEventsRegistrationsData(String sessionId) {
+    public WrapperResponse getEventsRegistrationsData(String sessionId,String eventName) {
         User user=sessionService.verifySessionId(sessionId);
         if(!Optional.ofNullable(user).isPresent()|| Objects.isNull(user.getCoordinatingClubName())||user.getCoordinatingClubName().equals(Club.EMPTY))
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized").build();
         Club coordinatingClub=user.getCoordinatingClubName();
         if(coordinatingClub.equals(Club.ALL)){
-            List<Team> teamList=teamRepo.findAll(Sort.by(Sort.Direction.ASC, "eventId"));
-            List<Event> eventList=eventRepo.findAllById(teamList.stream().map(Team::getEventId).collect(Collectors.toList()));
-            eventList.sort(Comparator.comparing(Event::getEventID));
 
         }
+        else{
+            return WrapperResponse.builder().data(getEventsRegsForAClub(eventName,coordinatingClub)).build();
+        }
+
+        }
+
+    private Object getEventsRegsForAClub(String eventName, Club coordinatingClub) {
+
     }
+}
 }

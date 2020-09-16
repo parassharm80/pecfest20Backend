@@ -20,8 +20,8 @@ public class EventRegistrationAdminController {
                                                   @PathVariable(value = "team_name") String teamName,@PathVariable(value = "organizing_club") Club organizingClub){
         return eventRegAdminService.registerTeamForAnEvent(eventName,pecFestIds,teamName,sessionId,organizingClub);
     }
-    @GetMapping
-    public WrapperResponse getEventsRegistrationsData(@RequestHeader("session_id") String sessionId) {
-        return eventRegAdminService.getEventsRegistrationsData(sessionId);
+    @GetMapping("/{event_name}")
+    public WrapperResponse getEventsRegistrationsData(@RequestHeader("session_id") String sessionId,@PathVariable("event_name") String eventName) {
+        return eventRegAdminService.getEventsRegistrationsData(sessionId,eventName);
     }
 }
