@@ -13,6 +13,7 @@ import lombok.*;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class EventsRegsDataResponse {
     private long teamId;
+    private Long eventId;
     private String teamName;
     private String leaderPecFestId;
     private String memberPecFestIdList;

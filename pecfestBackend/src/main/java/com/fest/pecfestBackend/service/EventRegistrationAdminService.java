@@ -67,13 +67,14 @@ public class EventRegistrationAdminService {
 
     private List<EventsRegsDataResponse> getEventsRegs(List<Event> eventList) {
         List<EventsRegsDataResponse> regsDataResponses=new ArrayList<>();
-        List<Team> teams=new ArrayList<>();
-        eventList.parallelStream().map(Event::getEventID).forEach(eventId->teams.addAll(teamRepo.findAllByEventId(eventId)));
-        for(Event event:eventList)
-        for(Team team:teams)
+        eventList.parallelStream().forEach(event -> {
+            List<Team> teams=teamRepo.findAllByEventId(event.getEventID());
+            for(Team team:teams)
             regsDataResponses.add(EventsRegsDataResponse.builder().eventName(event.getEventName()).teamName(team.getTeamName())
-            .leaderPecFestId(team.getLeaderPecFestId()).organizingClub(event.getOrganizingClub()).teamId(team.getTeamId()).memberPecFestIdList(StringUtils.join(team.getMemberPecFestIdList(), ',')).build());
+                    .leaderPecFestId(team.getLeaderPecFestId()).organizingClub(event.getOrganizingClub()).teamId(team.getTeamId()).memberPecFestIdList(StringUtils.join(team.getMemberPecFestIdList(), ',')).
+                            eventId(event.getEventID()).build());
 
+        });
         return regsDataResponses;
     }
 }
