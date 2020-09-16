@@ -99,7 +99,7 @@ public class EventService {
         Optional<Event> oldEventOptional=eventRepo.findById(eventId);
         if(oldEventOptional.isPresent()){
             Event oldEvent=oldEventOptional.get();
-                if(!CollectionUtils.isEmpty(eventRepo.findAllByEventNameAndOrganizingClub(editEventRequest.getEventName(),editEventRequest.getOrganizingClub())))
+                if(!editEventRequest.getEventName().equals(oldEvent.getEventName()) &&!CollectionUtils.isEmpty(eventRepo.findAllByEventNameAndOrganizingClub(editEventRequest.getEventName(),editEventRequest.getOrganizingClub())))
                     return WrapperResponse.builder().statusCode(HttpStatus.BAD_REQUEST.toString()).httpStatus(HttpStatus.BAD_REQUEST).statusMessage("The event name already exists!").build();
             oldEvent.setEventDescription(Optional.ofNullable(editEventRequest.getEventDescription()).orElse(oldEvent.getEventDescription()));
             oldEvent.setEventEndDateAndTime(Optional.ofNullable(editEventRequest.getEventEndDateAndTime()).orElse(oldEvent.getEventEndDateAndTime()));

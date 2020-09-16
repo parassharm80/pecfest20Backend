@@ -6,6 +6,7 @@ import com.fest.pecfestBackend.entity.User;
 import com.fest.pecfestBackend.enums.Club;
 import com.fest.pecfestBackend.repository.EventRepo;
 import com.fest.pecfestBackend.repository.TeamRepo;
+import com.fest.pecfestBackend.request.EditEventRegDataRequest;
 import com.fest.pecfestBackend.response.EventsRegsDataResponse;
 import com.fest.pecfestBackend.response.WrapperResponse;
 import org.apache.commons.collections4.CollectionUtils;
@@ -88,6 +89,19 @@ public class EventRegistrationAdminService {
         else
             teamRepo.deleteById(teamId);
         return WrapperResponse.builder().statusMessage("Deleted successfully. Refresh your page.").build();
+    }
+
+    public WrapperResponse editEventRegsData(Long teamId, EditEventRegDataRequest editEventRegDataRequest,String sessionId) {
+        User user=sessionService.verifySessionId(sessionId);
+        if(!Optional.ofNullable(user).isPresent()|| Objects.isNull(user.getCoordinatingClubName())||user.getCoordinatingClubName().equals(Club.EMPTY))
+            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized").build();
+        Optional<Team> existingTeamOptional=teamRepo.findById(teamId);
+        if(!existingTeamOptional.isPresent())
+            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("No such team exists").build();
+        else{
+            Team existingTeam=existingTeamOptional.get();
+
+        }
     }
 }
 

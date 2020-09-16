@@ -1,6 +1,7 @@
 package com.fest.pecfestBackend.controller;
 
 import com.fest.pecfestBackend.enums.Club;
+import com.fest.pecfestBackend.request.EditEventRegDataRequest;
 import com.fest.pecfestBackend.response.WrapperResponse;
 import com.fest.pecfestBackend.service.EventRegistrationAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,5 +30,7 @@ public class EventRegistrationAdminController {
         return eventRegAdminService.deleteTeam(sessionId,teamId);
     }
     @PutMapping("/{team_id}")
-    public WrapperResponse editEventRegistrationsData(@PathVariable("team_id") Long teamId,)
+    public WrapperResponse editEventRegistrationsData(@PathVariable("team_id") Long teamId, @RequestBody EditEventRegDataRequest editEventRegDataRequest,@RequestHeader("session_id") String sessionId){
+        return eventRegAdminService.editEventRegsData(teamId,editEventRegDataRequest,sessionId);
+    }
 }
