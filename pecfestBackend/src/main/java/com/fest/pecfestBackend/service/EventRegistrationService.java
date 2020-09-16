@@ -29,8 +29,6 @@ public class EventRegistrationService {
     private EventRepo eventRepo;
 
     public WrapperResponse registerTeamForAnEvent(Long eventId, List<String> pecFestIds, String teamName, String sessionId) {
-        if(Objects.isNull(sessionId)||sessionId.length()<2)
-        return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Please Log in first").build();
         if(Objects.isNull(pecFestIds)||pecFestIds.size()<1)
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Empty PECFEST Usernames' list").build();
         if(pecFestIds.parallelStream().distinct().count() <pecFestIds.size())
@@ -58,8 +56,7 @@ public class EventRegistrationService {
                             return WrapperResponse.builder().statusMessage(duplicateRegistrations+" have already been registered with a different team").httpStatus(HttpStatus.BAD_REQUEST).build();
                     }
                     teamRepo.save(Team.builder().eventId(eventId).leaderPecFestId(pecFestIds.get(0)).memberPecFestIdList(String.join(",", pecFestIds)).teamName(teamName)
-                            .leaderId(userRepo.findByPecFestId(pecFestIds.get(0)).getId()).eventName(eventOptional.get().getEventName())
-                            .build());
+                            .leaderId(userRepo.findByPecFestId(pecFestIds.get(0)).getId()).build());
                     return WrapperResponse.builder().statusMessage("Event Registration is successful").build();
                 }
            }
@@ -71,8 +68,6 @@ public class EventRegistrationService {
     }
 
     public WrapperResponse registerAnIndividual(Long eventId, String sessionId) {
-        if(Objects.isNull(sessionId)||sessionId.length()<2)
-            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Please Log in first").build();
         User user=sessionService.verifySessionId(sessionId);
         if(Objects.isNull(user)) {
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Please Log in first").build();
@@ -84,8 +79,7 @@ public class EventRegistrationService {
             if(!eventOptional.isPresent())
                 return WrapperResponse.builder().statusMessage("No such event exists").httpStatus(HttpStatus.BAD_REQUEST).build();
             teamRepo.save(Team.builder().eventId(eventId).leaderPecFestId(user.getPecFestId()).memberPecFestIdList(user.getPecFestId()).teamName(user.getPecFestId())
-                    .leaderId(user.getId()).eventName(eventOptional.get().getEventName())
-                    .build());
+                    .leaderId(user.getId()).build());
             return WrapperResponse.builder().statusMessage("Event Registration is successful").build();
         }
     }
