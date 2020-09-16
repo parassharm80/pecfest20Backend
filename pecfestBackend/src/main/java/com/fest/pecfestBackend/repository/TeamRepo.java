@@ -11,5 +11,4 @@ import java.util.List;
 public interface TeamRepo extends JpaRepository<Team, Long>, JpaSpecificationExecutor<Team>{ 
     boolean existsByTeamNameAndEventId(String teamName,Long eventId);
     List<Team> findAllByEventId(Long eventId);
-    List<Team> findAllByEventId(List<Long> eventIdList);
 }

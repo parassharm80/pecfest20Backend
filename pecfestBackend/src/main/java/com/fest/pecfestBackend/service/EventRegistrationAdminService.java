@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class EventRegistrationAdminService {
@@ -68,7 +67,8 @@ public class EventRegistrationAdminService {
 
     private List<EventsRegsDataResponse> getEventsRegs(List<Event> eventList) {
         List<EventsRegsDataResponse> regsDataResponses=new ArrayList<>();
-        List<Team> teams=teamRepo.findAllByEventId(eventList.parallelStream().map(Event::getEventID).collect(Collectors.toList()));
+        List<Team> teams=new ArrayList<>();
+        eventList.parallelStream().map(Event::getEventID).forEach(eventId->teams.addAll(teamRepo.findAllByEventId(eventId)));
         for(Event event:eventList)
         for(Team team:teams)
             regsDataResponses.add(EventsRegsDataResponse.builder().eventName(event.getEventName()).teamName(team.getTeamName())
