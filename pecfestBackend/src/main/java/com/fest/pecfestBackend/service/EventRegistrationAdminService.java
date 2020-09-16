@@ -20,6 +20,7 @@ public class EventRegistrationAdminService {
     private SessionService sessionService;
     @Autowired
     private EventRepo eventRepo;
+    @Autowired EventRegistrationService eventRegService;
 
     public WrapperResponse registerTeamForAnEvent(Long eventId, List<String> pecFestIds, String teamName, String sessionId) {
            User user=sessionService.verifySessionId(sessionId);
@@ -29,7 +30,7 @@ public class EventRegistrationAdminService {
         if(eventOptional.isPresent()){
             Event event=eventOptional.get();
             if(event.getOrganizingClub().equals(Club.ALL)||event.getOrganizingClub().equals(user.getCoordinatingClubName())){
-
+                    return eventRegService.registerTeamForAnEvent(eventId,pecFestIds,teamName,sessionId);
             }
             else
                 return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized to modify "+event.getOrganizingClub()+" club's registrations").build();

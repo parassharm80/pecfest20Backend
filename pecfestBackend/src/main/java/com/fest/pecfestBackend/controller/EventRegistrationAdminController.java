@@ -10,7 +10,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping("/admin/pecfest-registration")
-public class EventRegistrationAdmin {
+public class EventRegistrationAdminController {
     @Autowired
     private EventRegistrationAdminService eventRegAdminService;
 
