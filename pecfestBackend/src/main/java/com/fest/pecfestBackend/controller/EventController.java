@@ -14,7 +14,7 @@ public class EventController {
     @Autowired
     private EventService eventService;
 
-    @GetMapping("/club-wise") // api for events page
+    @GetMapping("/club-wise") // api for events page for general users
     public WrapperResponse getAllEventsByClub(){
         return eventService.getAllEventsByClub();
     }

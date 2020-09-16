@@ -6,8 +6,10 @@ import com.fest.pecfestBackend.entity.User;
 import com.fest.pecfestBackend.enums.Club;
 import com.fest.pecfestBackend.repository.EventRepo;
 import com.fest.pecfestBackend.repository.TeamRepo;
+import com.fest.pecfestBackend.request.EditEventRegDataRequest;
 import com.fest.pecfestBackend.response.EventsRegsDataResponse;
 import com.fest.pecfestBackend.response.WrapperResponse;
+import com.google.common.base.CharMatcher;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +78,40 @@ public class EventRegistrationAdminService {
 
         });
         return regsDataResponses;
+    }
+
+    public WrapperResponse deleteTeam(String sessionId, Long teamId) {
+        User user=sessionService.verifySessionId(sessionId);
+        if(!Optional.ofNullable(user).isPresent()|| Objects.isNull(user.getCoordinatingClubName())||user.getCoordinatingClubName().equals(Club.EMPTY))
+            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized").build();
+        Optional<Team> teamOptional=teamRepo.findById(teamId);
+        if(!teamOptional.isPresent())
+            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("No such team exists").build();
+        else
+            teamRepo.deleteById(teamId);
+        return WrapperResponse.builder().statusMessage("Deleted successfully. Refresh your page.").build();
+    }
+
+    public WrapperResponse editEventRegsData(Long teamId, EditEventRegDataRequest editEventRegDataRequest,String sessionId) {
+        User user=sessionService.verifySessionId(sessionId);
+        if(!Optional.ofNullable(user).isPresent()|| Objects.isNull(user.getCoordinatingClubName())||user.getCoordinatingClubName().equals(Club.EMPTY))
+            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized").build();
+        Optional<Team> existingTeamOptional=teamRepo.findById(teamId);
+        if(!existingTeamOptional.isPresent())
+            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("No such team exists").build();
+        else{
+            Team existingTeam=existingTeamOptional.get();
+            if(!existingTeam.getTeamName().equals(editEventRegDataRequest.getNewTeamName())&&teamRepo.existsByTeamNameAndEventId(editEventRegDataRequest.getNewTeamName(), existingTeam.getEventId()))
+                return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Team name already exists!").build();
+            else{
+                existingTeam.setLeaderPecFestId(editEventRegDataRequest.getLeaderPecFestId());
+                existingTeam.setMemberPecFestIdList(editEventRegDataRequest.getMemberPecFestIdList());
+                existingTeam.setTeamName(editEventRegDataRequest.getNewTeamName());
+                existingTeam.setLeaderId(Long.valueOf(CharMatcher.inRange('0','9').retainFrom(editEventRegDataRequest.getLeaderPecFestId())));
+                teamRepo.save(existingTeam);
+            }
+            return WrapperResponse.builder().statusMessage("Edited successfully. Refresh your page.").build();
+        }
     }
 }
 
