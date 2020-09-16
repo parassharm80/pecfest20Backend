@@ -29,4 +29,5 @@ public class EventRegistrationAdminController {
         return eventRegAdminService.deleteTeam(sessionId,teamId);
     }
     @PutMapping("/{team_id}")
+    public WrapperResponse editEventRegistrationsData(@PathVariable("team_id") Long teamId,)
 }
