@@ -40,7 +40,7 @@ public class EventRegistrationAdminService {
         List<Event> eventList= eventRepo.findAllByEventNameAndOrganizingClub(eventName,organizingClub);
         if(CollectionUtils.isNotEmpty(eventList)){
             Event event=eventList.get(0);
-            if(event.getOrganizingClub().equals(Club.ALL)||event.getOrganizingClub().equals(user.getCoordinatingClubName())){
+            if(user.getCoordinatingClubName().equals(Club.ALL)||event.getOrganizingClub().equals(user.getCoordinatingClubName())){
                     return eventRegService.registerTeamForAnEvent(event.getEventID(),pecFestIds,teamName,sessionId);
             }
             else
