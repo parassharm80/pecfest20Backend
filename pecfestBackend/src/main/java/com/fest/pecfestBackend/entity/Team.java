@@ -29,7 +29,8 @@ public class Team {
 	private Long leaderId;
 	@Column
 	private String memberPecFestIdList;
-
+	@Column
+	private String updatedBy;
 	public List<String> getMemberPecFestIdList(){
 		return Arrays.asList(memberPecFestIdList.split(","));
 	}
