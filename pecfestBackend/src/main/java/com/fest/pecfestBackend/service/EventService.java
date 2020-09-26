@@ -113,6 +113,7 @@ public class EventService {
             oldEvent.setMinNumberOfParticipants(editEventRequest.getMinNumberOfParticipants());
             oldEvent.setEventType(editEventRequest.getEventType());
             oldEvent.setRules(editEventRequest.getRules());
+            oldEvent.setUpdatedBy(user.getName());
             eventRepo.save(oldEvent);
             return WrapperResponse.builder().data(oldEvent).statusMessage("Edited successfully").build();
         }
