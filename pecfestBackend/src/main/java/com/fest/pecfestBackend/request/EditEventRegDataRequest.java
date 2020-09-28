@@ -7,18 +7,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 @Getter
 @Setter
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @AllArgsConstructor
 @NoArgsConstructor
-public class LogInRequest {
-    @Email
-    private String emailId;
+public class EditEventRegDataRequest {
     @NotBlank
-    private String password;
-
+    private String newTeamName;
+    @NotBlank
+    private String leaderPecFestId;
+    @NotEmpty
+    private List<String> memberPecFestIdList;
 }

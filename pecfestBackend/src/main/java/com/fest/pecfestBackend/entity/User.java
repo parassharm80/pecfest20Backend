@@ -1,24 +1,32 @@
 package com.fest.pecfestBackend.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.fest.pecfestBackend.enums.Club;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
-@Table(name="Users")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name="Users",indexes = {@Index(unique = true,columnList = "pec_fest_id",name = "pecFestIdIndex")})
 public class User {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private Long id;
+	@Column(name = "pec_fest_id")
+	private String pecFestId;
 	
 	@Column(nullable = false)
-	private String name;
-	
+	private String firstName;
+
 	@Column(nullable = false)
+	private String lastName;
+	
+	@Column(nullable = false,unique = true)
 	private String email;
 	
 	@Column(nullable = false)
@@ -27,18 +35,26 @@ public class User {
 	private String gender;
 	
 	@Column(nullable = false)
-	private Long yearofeducation;
+	private Long yearOfEducation;
 
-	@Column(name="accommodation")
+	@Column(name="require_accommodation")
 	private Boolean requireAccommodation=false;
 	
 	@Column
-	private Long preference= (long) 0;
-	
-	@Column
-	private Long teamId= (long) 0;
-	
-	@Column
-	private boolean isEnabled;
+	@Enumerated(EnumType.STRING)
+	private Club coordinatingClubName=null;
 
+	@Column
+	private boolean isVerified; //to check whether the user is verified or not
+	@Column
+	private String sessionId;
+	@Column
+	private String otpForPasswordReset;
+	@Column
+	private String contactNo;
+	@Column
+	private String collegeName;
+	public String getName(){
+		return this.firstName+" "+this.lastName;
+	}
 }

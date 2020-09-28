@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Getter
@@ -15,10 +14,17 @@ import javax.validation.constraints.NotBlank;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @AllArgsConstructor
 @NoArgsConstructor
-public class LogInRequest {
-    @Email
-    private String emailId;
+public class EditUserDetailsRequest {
     @NotBlank
-    private String password;
-
+    private String firstName;
+    @NotBlank
+    private String lastName;
+    @NotBlank
+    private String collegeName;
+    @NotBlank
+    private String contactNo;
+    @NotBlank
+    private Long yearOfEducation;
+    @NotBlank
+    private String gender;
 }

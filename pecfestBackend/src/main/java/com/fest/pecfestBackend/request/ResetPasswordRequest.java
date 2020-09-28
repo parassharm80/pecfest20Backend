@@ -7,13 +7,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @NoArgsConstructor
 public class ResetPasswordRequest {
-    private String emailId;
+    @NotNull
+    private Long userId;
+    @NotBlank
     private String password;
-    private Integer verificationCode;
+    @NotNull
+    private String verificationCode;
 }

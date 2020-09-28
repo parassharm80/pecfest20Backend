@@ -12,13 +12,23 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @AllArgsConstructor
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @NoArgsConstructor
-public class LogInRequest {
+public class UserSignUpRequest {
+    @NotBlank
+    private String firstName;
+    @NotBlank
+    private String lastName;
+    private Boolean requireAccommodation;
     @Email
-    private String emailId;
+    private String email;
     @NotBlank
     private String password;
-
+    private String gender;
+    private Long yearOfEducation;
+    @NotBlank
+    private String collegeName;
+    @NotBlank
+    private String contactNo;
 }

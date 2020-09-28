@@ -1,24 +1,17 @@
 package com.fest.pecfestBackend.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.fest.pecfestBackend.entity.User;
-import com.fest.pecfestBackend.repository.UserRepo;
+import com.fest.pecfestBackend.request.EditUserDetailsRequest;
 import com.fest.pecfestBackend.response.WrapperResponse;
 import com.fest.pecfestBackend.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
-import javax.json.JsonObject;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -36,15 +29,23 @@ public class UserController {
 		return userService.addUser(body);
 	}
 	
-	@PatchMapping("/{id}")
-	public WrapperResponse<User> editUser(@PathVariable("id") Long id
-			,@RequestBody User body) {
-		return userService.editUser(id, body);
+	@PutMapping("/{id}")
+	public WrapperResponse editUser(@PathVariable("id") Long id
+			,@RequestBody @Valid EditUserDetailsRequest editUserDetailsRequest) {
+		return userService.editUser(id, editUserDetailsRequest);
 	}
 
 	@PatchMapping("/accommodation/{id}")
 	public WrapperResponse<User> accommodationRequired(@PathVariable("id") Long id) {
 		return userService.setAccommodation(id);
+	}
+	@GetMapping("/registered-events")
+	public WrapperResponse getRegisteredEvents(@RequestHeader("session_id") String sessionId) {
+		return userService.getRegisteredEventsForUser(sessionId);
+	}
+	@GetMapping("/details")
+	public WrapperResponse getUserDetails(@RequestHeader("session_id") String sessionId){
+		return userService.getUserDetails(sessionId);
 	}
 	
 }

@@ -1,17 +1,10 @@
 package com.fest.pecfestBackend.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import lombok.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import javax.persistence.*;
+import java.util.Arrays;
+import java.util.List;
 
 @Getter
 @Setter
@@ -28,14 +21,21 @@ public class Team {
 
 	@Column(nullable = false)
 	private String teamName;
-
 	@Column(nullable = false)
-	private long eventId;
-
+	private Long eventId;
 	@Column(nullable = false)
-	private long leaderId;
-		
+	private String leaderPecFestId;
+	@Column(nullable = false)
+	private Long leaderId;
 	@Column
-	private long[] studentId;
+	private String memberPecFestIdList;
+	@Column
+	private String updatedBy;
+	public List<String> getMemberPecFestIdList(){
+		return Arrays.asList(memberPecFestIdList.split(","));
+	}
+	public void setMemberPecFestIdList(List<String> memberPecFestIdList){
+		this.memberPecFestIdList = String.join(",", memberPecFestIdList);
+	}
 
 }

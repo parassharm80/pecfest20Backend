@@ -1,25 +1,18 @@
 package com.fest.pecfestBackend.service;
 
+import com.fest.pecfestBackend.entity.Team;
+import com.fest.pecfestBackend.entity.User;
+import com.fest.pecfestBackend.repository.UserRepo;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
-import com.fest.pecfestBackend.entity.Team;
-import com.fest.pecfestBackend.repository.UserRepo;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import com.fest.pecfestBackend.entity.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public class ExcelFileExporter {
@@ -45,10 +38,18 @@ public class ExcelFileExporter {
             cell.setCellStyle(headerCellStyle);
 
             cell = row.createCell(2);
-            cell.setCellValue("year of education");
+            cell.setCellValue("Year of Education");
             cell.setCellStyle(headerCellStyle);
 
             cell = row.createCell(3);
+            cell.setCellValue("PECFEST ID");
+            cell.setCellStyle(headerCellStyle);
+
+            cell = row.createCell(4);
+            cell.setCellValue("Contact no.");
+            cell.setCellStyle(headerCellStyle);
+
+            cell = row.createCell(5);
             cell.setCellValue("Gender");
             cell.setCellStyle(headerCellStyle);
 
@@ -57,8 +58,10 @@ public class ExcelFileExporter {
                 Row dataRow = sheet.createRow(i + 1);
                 dataRow.createCell(0).setCellValue(customers.get(i).getName());
                 dataRow.createCell(1).setCellValue(customers.get(i).getEmail());
-                dataRow.createCell(2).setCellValue(customers.get(i).getYearofeducation());
-                dataRow.createCell(3).setCellValue(customers.get(i).getGender());
+                dataRow.createCell(2).setCellValue(customers.get(i).getYearOfEducation());
+                dataRow.createCell(3).setCellValue(customers.get(i).getPecFestId());
+                dataRow.createCell(4).setCellValue(customers.get(i).getContactNo());
+                dataRow.createCell(5).setCellValue(customers.get(i).getGender());
             }
 
 
@@ -66,7 +69,8 @@ public class ExcelFileExporter {
             sheet.autoSizeColumn(1);
             sheet.autoSizeColumn(2);
             sheet.autoSizeColumn(3);
-
+            sheet.autoSizeColumn(4);
+            sheet.autoSizeColumn(5);
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             workbook.write(outputStream);
             return new ByteArrayInputStream(outputStream.toByteArray());
@@ -103,10 +107,18 @@ public class ExcelFileExporter {
             cell.setCellStyle(headerCellStyle);
 
             cell = row.createCell(4);
-            cell.setCellValue("year of education");
+            cell.setCellValue("Year of Education");
             cell.setCellStyle(headerCellStyle);
 
             cell = row.createCell(5);
+            cell.setCellValue("PECFEST ID");
+            cell.setCellStyle(headerCellStyle);
+
+            cell = row.createCell(6);
+            cell.setCellValue("Contact no.");
+            cell.setCellStyle(headerCellStyle);
+
+            cell = row.createCell(7);
             cell.setCellValue("Gender");
             cell.setCellStyle(headerCellStyle);
             int i=1;
@@ -124,8 +136,10 @@ public class ExcelFileExporter {
                     }
                     innerDataRow.createCell(2).setCellValue(entry.getValue().get(j).getName());
                     innerDataRow.createCell(3).setCellValue(entry.getValue().get(j).getEmail());
-                    innerDataRow.createCell(4).setCellValue(entry.getValue().get(j).getYearofeducation());
-                    innerDataRow.createCell(5).setCellValue(entry.getValue().get(j).getGender());
+                    innerDataRow.createCell(4).setCellValue(entry.getValue().get(j).getYearOfEducation());
+                    innerDataRow.createCell(5).setCellValue(entry.getValue().get(j).getPecFestId());
+                    innerDataRow.createCell(6).setCellValue(entry.getValue().get(j).getContactNo());
+                    innerDataRow.createCell(7).setCellValue(entry.getValue().get(j).getGender());
                     i++;
                  }
                 i++;
@@ -137,6 +151,8 @@ public class ExcelFileExporter {
             sheet.autoSizeColumn(3);
             sheet.autoSizeColumn(4);
             sheet.autoSizeColumn(5);
+            sheet.autoSizeColumn(6);
+            sheet.autoSizeColumn(7);
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             workbook.write(outputStream);

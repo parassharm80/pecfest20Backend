@@ -1,19 +1,23 @@
 package com.fest.pecfestBackend.service;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
-
 import com.fest.pecfestBackend.entity.Confirmation;
 import com.fest.pecfestBackend.entity.User;
 import com.fest.pecfestBackend.repository.ConfirmationRepo;
 import com.fest.pecfestBackend.repository.UserRepo;
+import com.fest.pecfestBackend.request.UserSignUpRequest;
+import com.fest.pecfestBackend.response.WrapperResponse;
+import com.google.common.hash.Hashing;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+import java.util.Optional;
 
 
 @Service
@@ -28,51 +32,55 @@ public class UserAccountService {
 	@Autowired
 	private EmailSenderService emailSenderService;
 
-	public ModelAndView displayRegistration(ModelAndView modelAndView, User user) {
-		modelAndView.addObject("user",user);
-		modelAndView.setViewName("register");
-		return modelAndView;
-	}
-	
-	public ModelAndView registerUser(ModelAndView modelAndView, User user) {
-		User existingUser = userRepo.findByEmail(user.getEmail());
-		if(existingUser==null) {
-			modelAndView.addObject("message","This email already exists!");
-			modelAndView.setViewName("Error");
-		}
-		else {
-			userRepo.save(user);
-			Confirmation confirmation = new Confirmation(user);
+	@Value("${spring.mail.username}")
+	private String mailUsername;
+	@Value("${domain-name}")
+	private String domainHost;
+
+	public WrapperResponse registerUser(UserSignUpRequest userSignUpRequest) {
+		User existingUser = userRepo.findByEmail(userSignUpRequest.getEmail());
+		if(Objects.isNull(existingUser)) {
+			String hashedPassword= Hashing.sha512().hashString(userSignUpRequest.getPassword(), StandardCharsets.UTF_8).toString();
+			User newUser=User.builder().email(userSignUpRequest.getEmail()).firstName(userSignUpRequest.getFirstName()).lastName(userSignUpRequest.getLastName())
+					.gender(userSignUpRequest.getGender()).isVerified(false).otpForPasswordReset(null)
+					.password(hashedPassword).sessionId(StringUtils.EMPTY).yearOfEducation(userSignUpRequest.getYearOfEducation())
+					.contactNo(userSignUpRequest.getContactNo()).collegeName(userSignUpRequest.getCollegeName()).requireAccommodation(false).build();
+			userRepo.save(newUser);
+			newUser.setPecFestId("PECFEST"+ newUser.getFirstName().charAt(0)+newUser.getLastName().charAt(0)+newUser.getId().toString());
+			userRepo.save(newUser);
+			Confirmation confirmation = new Confirmation(newUser);
 			confirmationRepo.save(confirmation);
-			SimpleMailMessage mailMessage = new SimpleMailMessage();
-			mailMessage.setTo(user.getEmail());
-			mailMessage.setSubject("PECFEST Registration");
-			mailMessage.setFrom("");
-			mailMessage.setText("");
-			emailSenderService.sendEmail(mailMessage);
-			modelAndView.addObject("emailId",user.getEmail());
-			modelAndView.setViewName("registrationSuccessful");
-			
+			emailSenderService.sendEmail(createEmailMessage(newUser.getPecFestId(), newUser.getEmail(),confirmation.getConfirmationToken()));
+			return WrapperResponse.builder().statusMessage("Check email for PECFEST Username and verification.").build();
 		}
-		return modelAndView;
+		else if(!existingUser.isVerified()){
+			Confirmation confirmation = new Confirmation(existingUser);
+			confirmationRepo.save(confirmation);
+			emailSenderService.sendEmail(createEmailMessage(existingUser.getPecFestId(), existingUser.getEmail(),confirmation.getConfirmationToken()));
+			return WrapperResponse.builder().statusMessage("Check your email again for verification.").build();
+		}
+
+		return WrapperResponse.builder().httpStatus(HttpStatus.BAD_REQUEST).statusMessage("EmailID already registered and verified").build();
 	}
-	
-	@RequestMapping(value="/confirm", method = {RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView confirmUserAccount(ModelAndView modelAndView, @RequestParam String confirmationToken) {
-		Confirmation confirmation = confirmationRepo.findByConfirmToken(confirmationToken);
-		if(confirmation!=null) {
+	private SimpleMailMessage createEmailMessage(String pecFestId,String emailId,String confirmationToken) {
+		SimpleMailMessage message=new SimpleMailMessage();
+		message.setTo(emailId);
+		message.setFrom(mailUsername);
+		message.setSubject("PECFEST ID and Email Verification");
+		message.setText("Your PECFEST 2020 Username is: "+pecFestId+". This ID will be used for events' registration. "+
+				"For emailVerification: Click here: "+domainHost+"/verify-email?verification_token="+confirmationToken);
+		return message;
+	}
+
+	public WrapperResponse confirmUserAccount(@RequestParam String confirmationToken) {
+		Confirmation confirmation = confirmationRepo.findByConfirmationToken(confirmationToken);
+		if(Optional.ofNullable(confirmation).isPresent()) {
 			User user = userRepo.findByEmail(confirmation.getUser().getEmail());
-			user.setEnabled(true);
+			user.setVerified(true);
 			userRepo.save(user);
-			modelAndView.setViewName("Account Verified");
-			
+			return WrapperResponse.builder().statusMessage("Verified. Now you can log in at PECFEST Website").build();
 		}
-		else {
-			modelAndView.addObject("message","This link is invalid or broken!");
-			modelAndView.setViewName("Error");
-			
-		}
-		return modelAndView;
+		return WrapperResponse.builder().statusMessage("Invalid link").httpStatus(HttpStatus.BAD_REQUEST).build();
 	}
 	
 }

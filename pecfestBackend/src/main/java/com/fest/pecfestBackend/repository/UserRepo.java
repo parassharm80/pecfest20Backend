@@ -13,6 +13,8 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
 	User findByEmail(String email);
 	User findByEmailAndPassword(String email,String password);
 	List<User> findByRequireAccommodationTrue();
-
-
+	User findBySessionId(String sessionId);
+	boolean existsByPecFestIdAndIsVerified(String pecFestId,boolean isVerified);
+	User findByPecFestId(String pecFestId);
+	User findByIdAndOtpForPasswordReset(Long id,String otpForPasswordReset);
 }
