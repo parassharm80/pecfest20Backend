@@ -1,14 +1,17 @@
 package com.fest.pecfestBackend.controller;
 
 import com.fest.pecfestBackend.entity.User;
+import com.fest.pecfestBackend.enums.Club;
 import com.fest.pecfestBackend.request.EditUserDetailsRequest;
 import com.fest.pecfestBackend.response.WrapperResponse;
+import com.fest.pecfestBackend.service.SessionService;
 import com.fest.pecfestBackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 
 
 @CrossOrigin
@@ -18,9 +21,13 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
-	
+	@Autowired
+	private SessionService sessionService;
 	@GetMapping
-	public WrapperResponse<List<User>> getUsers(){
+	public WrapperResponse<List<User>> getUsers(@RequestHeader("session_id") String sessionId) throws Exception {
+		User user=sessionService.verifySessionId(sessionId);
+		if(Objects.isNull(user)||!user.getCoordinatingClubName().equals(Club.ALL))
+			throw new Exception("FORBIDDEN!!");
 		return userService.getUser();
 	}
 	@PostMapping
