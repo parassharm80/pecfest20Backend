@@ -23,7 +23,6 @@ public class UserController {
 	public WrapperResponse<List<User>> getUsers(){
 		return userService.getUser();
 	}
-	
 	@PostMapping
 	public WrapperResponse<User> addUser(@RequestBody User body) {
 		return userService.addUser(body);
