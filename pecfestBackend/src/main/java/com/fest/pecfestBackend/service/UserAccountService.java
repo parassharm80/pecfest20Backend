@@ -67,8 +67,10 @@ public class UserAccountService {
 		message.setTo(emailId);
 		message.setFrom(mailUsername);
 		message.setSubject("PECFEST ID and Email Verification");
-		message.setText("Your PECFEST 2020 Username is: "+pecFestId+". This ID will be used for events' registration. "+
-				"For emailVerification: Click here: "+domainHost+"/verify-email?verification_token="+confirmationToken);
+		message.setText("Greetings from PECFEST! " +
+				"Your PECFEST 2020 Username is: "+pecFestId+". This will be used for events' registration. " +
+				" "+
+				"For email-verification: Click here: "+domainHost+"/verify-email?verification_token="+confirmationToken);
 		return message;
 	}
 

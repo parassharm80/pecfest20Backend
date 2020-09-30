@@ -64,7 +64,7 @@ public class EventRegistrationAdminService {
         if(CollectionUtils.isNotEmpty(eventList))
             return WrapperResponse.builder().data(getEventsRegs(eventList)).build();
         else
-            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("No such event name exists. Check for spelling mistakes").build();
+            return WrapperResponse.builder().statusMessage("No such event name exists. Check for spelling mistakes").build();
     }
 
     private List<EventsRegsDataResponse> getEventsRegs(List<Event> eventList) {
