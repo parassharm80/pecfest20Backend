@@ -114,6 +114,8 @@ public class EventService {
             oldEvent.setEventType(editEventRequest.getEventType());
             oldEvent.setRules(editEventRequest.getRules());
             oldEvent.setUpdatedBy(user.getName());
+            oldEvent.setPrizeMoneyWorth(editEventRequest.getPrizeMoneyWorth());
+            oldEvent.setEventBannerImageUrl(editEventRequest.getEventBannerImageUrl());
             eventRepo.save(oldEvent);
             return WrapperResponse.builder().data(oldEvent).statusMessage("Edited successfully").build();
         }
