@@ -52,6 +52,12 @@ public class ExcelFileExporter {
             cell = row.createCell(5);
             cell.setCellValue("Gender");
             cell.setCellStyle(headerCellStyle);
+            
+            cell = row.createCell(6);
+            cell.setCellValue("College Name");
+            cell.setCellStyle(headerCellStyle);
+            
+            
 
 
             for(int i = 0; i < customers.size(); i++) {
@@ -62,6 +68,7 @@ public class ExcelFileExporter {
                 dataRow.createCell(3).setCellValue(customers.get(i).getPecFestId());
                 dataRow.createCell(4).setCellValue(customers.get(i).getContactNo());
                 dataRow.createCell(5).setCellValue(customers.get(i).getGender());
+                dataRow.createCell(6).setCellValue(customers.get(i).getCollegeName());
             }
 
 
@@ -71,6 +78,7 @@ public class ExcelFileExporter {
             sheet.autoSizeColumn(3);
             sheet.autoSizeColumn(4);
             sheet.autoSizeColumn(5);
+            sheet.autoSizeColumn(6);
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             workbook.write(outputStream);
             return new ByteArrayInputStream(outputStream.toByteArray());
