@@ -68,7 +68,7 @@ public class ExcelFileExporter {
                 dataRow.createCell(3).setCellValue(customers.get(i).getPecFestId());
                 dataRow.createCell(4).setCellValue(customers.get(i).getContactNo());
                 dataRow.createCell(5).setCellValue(customers.get(i).getGender());
-                dataRow.createCell(6).setCellValue(customers.get(i).getcollegeName());
+                dataRow.createCell(6).setCellValue(customers.get(i).getCollegeName());
             }
 
 
