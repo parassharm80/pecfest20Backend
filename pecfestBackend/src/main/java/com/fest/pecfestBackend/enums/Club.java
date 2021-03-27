@@ -1,6 +1,15 @@
 package com.fest.pecfestBackend.enums;
 
 public enum Club {
+	Treasure_Hunt("Treasure Hunt"),
+	CAD_Competitions("CAD Competitions"),
+	Gaming("Gaming"),
+	Electronics_and_Circuits("Electronics and Circuits"),
+	Webinars("Webinars"),
+	Miscellaneous("Miscellaneous"),
+	Coding("Coding"),
+	Quiz("Quiz"),
+    Case_Study_Competition("Case Study Competition"),
     SCC("Student Counselling Cell"),
     EIC("Entrepreneurship and Incubation Cell"),
     Rotaract_Club("Rotaract Club"),
