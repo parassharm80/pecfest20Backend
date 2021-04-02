@@ -6,6 +6,7 @@ import com.fest.pecfestBackend.entity.User;
 import com.fest.pecfestBackend.enums.Club;
 import com.fest.pecfestBackend.repository.EventRepo;
 import com.fest.pecfestBackend.repository.TeamRepo;
+import com.fest.pecfestBackend.repository.UserRepo;
 import com.fest.pecfestBackend.request.EditEventRegDataRequest;
 import com.fest.pecfestBackend.response.EventsRegsDataResponse;
 import com.fest.pecfestBackend.response.WrapperResponse;
@@ -31,6 +32,8 @@ public class EventRegistrationAdminService {
     @Autowired EventRegistrationService eventRegService;
     @Autowired
     private TeamRepo teamRepo;
+    @Autowired
+    private UserRepo userRepo;
 
 //    public WrapperResponse registerTeamForAnEvent(String eventName, List<String> pecFestIds, String teamName, String sessionId,Club organizingClub) {
 //
@@ -71,10 +74,12 @@ public class EventRegistrationAdminService {
         List<EventsRegsDataResponse> regsDataResponses=new ArrayList<>();
         eventList.parallelStream().forEach(event -> {
             List<Team> teams=teamRepo.findAllByEventId(event.getEventID());
-            for(Team team:teams)
+            for(Team team:teams) {
+            	User leaderUser=userRepo.findByPecFestId(team.getLeaderPecFestId());
             regsDataResponses.add(EventsRegsDataResponse.builder().eventName(event.getEventName()).teamName(team.getTeamName())
                     .leaderPecFestId(team.getLeaderPecFestId()).organizingClub(event.getOrganizingClub()).teamId(team.getTeamId()).memberPecFestIdList(StringUtils.join(team.getMemberPecFestIdList(), ',')).
-                            eventId(event.getEventID()).driveLink(team.getDriveLink()).build());
+                            eventId(event.getEventID()).driveLink(team.getDriveLink()).leaderContact(leaderUser.getContactNo()).leaderEmail(leaderUser.getEmail()).build());
+            }
 
         });
         return regsDataResponses;
