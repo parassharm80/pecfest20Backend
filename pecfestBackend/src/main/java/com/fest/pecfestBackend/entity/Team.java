@@ -31,6 +31,8 @@ public class Team {
 	private String memberPecFestIdList;
 	@Column
 	private String updatedBy;
+	@Column
+	private String driveLink=null;
 	public List<String> getMemberPecFestIdList(){
 		return Arrays.asList(memberPecFestIdList.split(","));
 	}

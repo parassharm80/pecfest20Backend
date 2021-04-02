@@ -19,4 +19,5 @@ public class EventsRegsDataResponse {
     private String memberPecFestIdList;
     private String eventName;
     private Club organizingClub;
+    private String driveLink;
 }

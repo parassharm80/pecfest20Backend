@@ -32,23 +32,23 @@ public class EventRegistrationAdminService {
     @Autowired
     private TeamRepo teamRepo;
 
-    public WrapperResponse registerTeamForAnEvent(String eventName, List<String> pecFestIds, String teamName, String sessionId,Club organizingClub) {
-
-           User user=sessionService.verifySessionId(sessionId);
-        if(!Optional.ofNullable(user).isPresent()|| Objects.isNull(user.getCoordinatingClubName())||user.getCoordinatingClubName().equals(Club.EMPTY))
-            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized").build();
-        List<Event> eventList= eventRepo.findAllByEventNameAndOrganizingClub(eventName,organizingClub);
-        if(CollectionUtils.isNotEmpty(eventList)){
-            Event event=eventList.get(0);
-            if(user.getCoordinatingClubName().equals(Club.ALL)||event.getOrganizingClub().equals(user.getCoordinatingClubName())){
-                    return eventRegService.registerTeamForAnEvent(event.getEventID(),pecFestIds,teamName,sessionId);
-            }
-            else
-                return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized to modify "+event.getOrganizingClub()+" club's registrations").build();
-        }
-        else
-            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("No such event exists").build();
-    }
+//    public WrapperResponse registerTeamForAnEvent(String eventName, List<String> pecFestIds, String teamName, String sessionId,Club organizingClub) {
+//
+//           User user=sessionService.verifySessionId(sessionId);
+//        if(!Optional.ofNullable(user).isPresent()|| Objects.isNull(user.getCoordinatingClubName())||user.getCoordinatingClubName().equals(Club.EMPTY))
+//            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized").build();
+//        List<Event> eventList= eventRepo.findAllByEventNameAndOrganizingClub(eventName,organizingClub);
+//        if(CollectionUtils.isNotEmpty(eventList)){
+//            Event event=eventList.get(0);
+//            if(user.getCoordinatingClubName().equals(Club.ALL)||event.getOrganizingClub().equals(user.getCoordinatingClubName())){
+//                    return eventRegService.registerTeamForAnEvent(event.getEventID(),pecFestIds,teamName,sessionId);
+//            }
+//            else
+//                return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Not authorized to modify "+event.getOrganizingClub()+" club's registrations").build();
+//        }
+//        else
+//            return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("No such event exists").build();
+//    }
 
     public WrapperResponse getEventsRegistrationsData(String sessionId,String eventName) {
         User user=sessionService.verifySessionId(sessionId);
@@ -74,7 +74,7 @@ public class EventRegistrationAdminService {
             for(Team team:teams)
             regsDataResponses.add(EventsRegsDataResponse.builder().eventName(event.getEventName()).teamName(team.getTeamName())
                     .leaderPecFestId(team.getLeaderPecFestId()).organizingClub(event.getOrganizingClub()).teamId(team.getTeamId()).memberPecFestIdList(StringUtils.join(team.getMemberPecFestIdList(), ',')).
-                            eventId(event.getEventID()).build());
+                            eventId(event.getEventID()).driveLink(team.getDriveLink()).build());
 
         });
         return regsDataResponses;

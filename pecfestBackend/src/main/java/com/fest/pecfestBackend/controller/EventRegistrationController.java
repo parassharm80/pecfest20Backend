@@ -1,5 +1,6 @@
 package com.fest.pecfestBackend.controller;
 
+import com.fest.pecfestBackend.request.TeamRegRequest;
 import com.fest.pecfestBackend.response.WrapperResponse;
 import com.fest.pecfestBackend.service.EventRegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,12 @@ public class EventRegistrationController {
     private EventRegistrationService eventRegService;
 
     @PostMapping("/{event_id}/{team_name}")
-    public WrapperResponse registerTeamForAnEvent(@PathVariable("event_id") Long eventId, @RequestBody List<String> pecFestIds, @RequestHeader("session_id") String sessionId,
+    public WrapperResponse registerTeamForAnEvent(@PathVariable("event_id") Long eventId, @RequestBody TeamRegRequest teamRegRequest, @RequestHeader("session_id") String sessionId,
                                               @PathVariable(value = "team_name") String teamName){
-        return eventRegService.registerTeamForAnEvent(eventId,pecFestIds,teamName,sessionId);
+        return eventRegService.registerTeamForAnEvent(eventId,teamRegRequest,teamName,sessionId);
     }
     @PostMapping("/{event_id}")
-    public WrapperResponse registerIndividualForAnEvent(@PathVariable("event_id") Long eventId, @RequestHeader("session_id") String sessionId){
-        return eventRegService.registerAnIndividual(eventId,sessionId);
+    public WrapperResponse registerIndividualForAnEvent(@PathVariable("event_id") Long eventId, @RequestHeader("session_id") String sessionId,@RequestBody TeamRegRequest teamRegRequest){
+        return eventRegService.registerAnIndividual(eventId,sessionId,teamRegRequest);
     }
 }
