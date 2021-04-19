@@ -6,6 +6,7 @@ import com.fest.pecfestBackend.entity.User;
 import com.fest.pecfestBackend.repository.EventRepo;
 import com.fest.pecfestBackend.repository.TeamRepo;
 import com.fest.pecfestBackend.repository.UserRepo;
+import com.fest.pecfestBackend.request.TeamRegRequest;
 import com.fest.pecfestBackend.response.WrapperResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,8 @@ public class EventRegistrationService {
     @Autowired
     private EventRepo eventRepo;
 
-    public WrapperResponse registerTeamForAnEvent(Long eventId, List<String> pecFestIds, String teamName, String sessionId) {
+    public WrapperResponse registerTeamForAnEvent(Long eventId, TeamRegRequest teamRegRequest, String teamName, String sessionId) {
+    	List<String> pecFestIds=teamRegRequest.getPecfestIdList();
         if(Objects.isNull(pecFestIds)||pecFestIds.size()<1)
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Empty PECFEST Usernames' list").build();
         if(pecFestIds.parallelStream().distinct().count() <pecFestIds.size())
@@ -56,7 +58,7 @@ public class EventRegistrationService {
                             return WrapperResponse.builder().statusMessage(duplicateRegistrations+" have already been registered with a different team").httpStatus(HttpStatus.BAD_REQUEST).build();
                     }
                     teamRepo.save(Team.builder().eventId(eventId).leaderPecFestId(pecFestIds.get(0)).memberPecFestIdList(String.join(",", pecFestIds)).teamName(teamName)
-                            .leaderId(userRepo.findByPecFestId(pecFestIds.get(0)).getId()).updatedBy(user.getPecFestId()).build());
+                            .leaderId(userRepo.findByPecFestId(pecFestIds.get(0)).getId()).updatedBy(user.getPecFestId()).driveLink(teamRegRequest.getContentLink()).build());
                     return WrapperResponse.builder().statusMessage("Event Registration is successful").build();
                 }
            }
@@ -67,7 +69,7 @@ public class EventRegistrationService {
 
     }
 
-    public WrapperResponse registerAnIndividual(Long eventId, String sessionId) {
+    public WrapperResponse registerAnIndividual(Long eventId, String sessionId,TeamRegRequest teamRegRequest) {
         User user=sessionService.verifySessionId(sessionId);
         if(Objects.isNull(user)) {
             return WrapperResponse.builder().httpStatus(HttpStatus.FORBIDDEN).statusMessage("Please Log in first").build();
@@ -79,7 +81,7 @@ public class EventRegistrationService {
             if(!eventOptional.isPresent())
                 return WrapperResponse.builder().statusMessage("No such event exists").httpStatus(HttpStatus.BAD_REQUEST).build();
             teamRepo.save(Team.builder().eventId(eventId).leaderPecFestId(user.getPecFestId()).memberPecFestIdList(user.getPecFestId()).teamName(user.getPecFestId())
-                    .leaderId(user.getId()).updatedBy(user.getPecFestId()).build());
+                    .leaderId(user.getId()).updatedBy(user.getPecFestId()).driveLink(teamRegRequest.getContentLink()).build());
             return WrapperResponse.builder().statusMessage("Event Registration is successful").build();
         }
     }

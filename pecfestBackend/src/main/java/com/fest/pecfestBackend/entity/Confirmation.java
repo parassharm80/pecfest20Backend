@@ -35,7 +35,5 @@ public class Confirmation {
 		confirmationToken = UUID.randomUUID().toString()+user.getId();
 	}
 	
-	
-	
 
 }

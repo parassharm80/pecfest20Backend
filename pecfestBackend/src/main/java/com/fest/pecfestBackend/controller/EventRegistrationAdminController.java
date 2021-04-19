@@ -16,11 +16,11 @@ public class EventRegistrationAdminController {
     @Autowired
     private EventRegistrationAdminService eventRegAdminService;
 
-    @PostMapping("/{organizing_club}/{event_name}/{team_name}")
-    public WrapperResponse registerTeamForAnEvent(@PathVariable("event_name") String eventName, @RequestBody List<String> pecFestIds, @RequestHeader("session_id") String sessionId,
-                                                  @PathVariable(value = "team_name") String teamName,@PathVariable(value = "organizing_club") Club organizingClub){
-        return eventRegAdminService.registerTeamForAnEvent(eventName,pecFestIds,teamName,sessionId,organizingClub);
-    }
+//    @PostMapping("/{organizing_club}/{event_name}/{team_name}")
+//    public WrapperResponse registerTeamForAnEvent(@PathVariable("event_name") String eventName, @RequestBody List<String> pecFestIds, @RequestHeader("session_id") String sessionId,
+//                                                  @PathVariable(value = "team_name") String teamName,@PathVariable(value = "organizing_club") Club organizingClub){
+//        return eventRegAdminService.registerTeamForAnEvent(eventName,pecFestIds,teamName,sessionId,organizingClub);
+//    }
     @GetMapping("/{event_name}")
     public WrapperResponse getEventsRegistrationsData(@RequestHeader("session_id") String sessionId,@PathVariable("event_name") String eventName) {
         return eventRegAdminService.getEventsRegistrationsData(sessionId,eventName);
